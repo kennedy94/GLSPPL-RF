@@ -155,6 +155,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Lot Sizing Math.cpp" />
+    <ClCompile Include="Problema.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Problema.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
