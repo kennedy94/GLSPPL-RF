@@ -5,6 +5,9 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -19,6 +22,7 @@ protected:
 		CA; //Capacidade de Armazenagem
 
 	vector< vector<int> >
+		SP,
 		d,	//Demanda do produto i no período t
 		CP,	//Capacidade de produção disponível na máquina l no período t
 		cp,	//Custo de produção do produto i na máquina l
@@ -37,7 +41,7 @@ protected:
 		cs;	//custo de setup para produzir o produto j imediatamente após o produto i na máquina l
 
 public:
-	Problema();
+	Problema(const char* nome);
 
 	~Problema();
 };
