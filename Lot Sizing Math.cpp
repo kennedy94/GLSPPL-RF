@@ -4,7 +4,9 @@ int main() {
 
 	Problema Teste("testes");
 
-	cout << "Falta implementar tudo" << endl;
+	Teste.resolver();
+
+	cout << "Falta implementar quase tudo" << endl;
 
 	return 0;
 }
