@@ -19,10 +19,10 @@ private:
 	IloCplex cplex;
 	IloExpr OBJETIVO;
 
-	IloArray<IloIntVarArray> I_plus, I_minus;
-	IloArray<IloArray<IloIntVarArray>> q;
+	IloArray<IloFloatVarArray> I_plus, I_minus;
+	IloArray<IloArray<IloFloatVarArray>> q;
 	IloArray<IloArray<IloBoolVarArray>> x;
-	IloArray<IloArray<IloArray<IloBoolVarArray>>> y;
+	IloArray<IloArray<IloArray<IloFloatVarArray>>> y;
 	
 
 
@@ -54,6 +54,8 @@ protected:
 	vector< vector< vector<float> > >
 		st, //tempo de setup para produção do produto j imediatamente após o produto i na máquina l
 		cs;	//custo de setup para produzir o produto j imediatamente após o produto i na máquina l
+
+	IloNumVar C_setup, C_prod, C_est, C_Bko;
 
 	void criar_modelo();
 	void cplexvar_initiate();

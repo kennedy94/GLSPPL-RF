@@ -6,7 +6,7 @@ int main() {
 
 	Teste.resolver();
 
-	cout << "Falta implementar quase tudo" << endl;
+	cout << "Descobrir o que está causando inviabilidade" << endl;
 
 	return 0;
 }
