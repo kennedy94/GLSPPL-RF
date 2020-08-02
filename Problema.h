@@ -13,16 +13,7 @@ using namespace std;
 
 
 class Problema{
-private:
-	IloModel modelo;
-	IloEnv env;
-	IloCplex cplex;
-	IloExpr OBJETIVO;
 
-	IloArray<IloFloatVarArray> I_plus, I_minus;
-	IloArray<IloArray<IloFloatVarArray>> q;
-	IloArray<IloArray<IloBoolVarArray>> x;
-	IloArray<IloArray<IloArray<IloFloatVarArray>>> y;
 	
 
 
@@ -55,16 +46,8 @@ protected:
 		st, //tempo de setup para produção do produto j imediatamente após o produto i na máquina l
 		cs;	//custo de setup para produzir o produto j imediatamente após o produto i na máquina l
 
-	IloNumVar C_setup, C_prod, C_est, C_Bko;
-
-	void criar_modelo();
-	void cplexvar_initiate();
-	void fo();
-	void restricoes();
 public:
 	Problema(const char* nome);
-
-	void resolver();
 
 	~Problema();
 };

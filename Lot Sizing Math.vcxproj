@@ -155,9 +155,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Lot Sizing Math.cpp" />
+    <ClCompile Include="Modelo.cpp" />
     <ClCompile Include="Problema.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Modelo.h" />
     <ClInclude Include="Problema.h" />
   </ItemGroup>
   <ItemGroup>

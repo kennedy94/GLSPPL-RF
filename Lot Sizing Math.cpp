@@ -1,8 +1,9 @@
 #include "Problema.h"
+#include "Modelo.h"
 
 int main() {
 
-	Problema Teste("testes");
+	Modelo Teste("testes");
 
 	Teste.resolver();
 
