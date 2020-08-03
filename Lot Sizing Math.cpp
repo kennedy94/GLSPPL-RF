@@ -3,12 +3,12 @@
 
 int main() {
 
-	Modelo Teste("testes");
+	Modelo Teste("IO_PrA2.txt");
 
 	//Teste.resolver();
 
 
-	Teste.RF_Tm1();
+	Teste.RF_Tm1(16);
 
 	return 0;
 }

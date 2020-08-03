@@ -28,7 +28,8 @@ public:
 	}
 
 	void resolver();
-	void RF_Tm1();
+	void RF_Tm1(int k);
+	void RF_Tm2(int k);
 
 };
 
