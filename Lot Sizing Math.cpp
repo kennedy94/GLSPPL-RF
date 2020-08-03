@@ -5,9 +5,10 @@ int main() {
 
 	Modelo Teste("testes");
 
-	Teste.resolver();
+	//Teste.resolver();
 
-	cout << "Descobrir o que está causando inviabilidade" << endl;
+
+	Teste.RF_Tm1();
 
 	return 0;
 }

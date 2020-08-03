@@ -8,15 +8,23 @@ void Modelo::resolver(){
 	try {
 		//desalocar_matrizes();
 		criar_modelo();
+		//restrições de integralidade
+		for (IloInt i = 0; i < N; i++) {
+			for (IloInt l = 0; l < M; l++) {
+				for (IloInt s = 0; s < W; s++) {
+					modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
+				}
+			}
+		}
 
 		cplex = IloCplex(modelo);
 		cplex.exportModel("Modelo.lp");
 
 		cplex.setParam(IloCplex::TiLim, 600);
 		//cplex.setParam(IloCplex::Param::Emphasis::Numerical, 1);
-		cplex.setParam(IloCplex::NodeFileInd, 1);
-
-		//soltime = cplex.getCplexTime();
+		//cplex.setParam(IloCplex::NodeFileInd, 1);
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
 		if (!cplex.solve()) {
 			env.error() << "Otimizacao do LP mal-sucedida." << endl;
 			//resultados.open("resultados_MCCP.txt", fstream::app);
@@ -24,15 +32,13 @@ void Modelo::resolver(){
 			//resultados.close();
 			return;
 		}
-		//soltime = cplex.getCplexTime() - soltime;
+		soltime = cplex.getCplexTime() - soltime;
 
-		//resultados.open("resultados_MCCP.txt", fstream::app);
-		//resultados << "\t" << cplex.getObjValue() << "\t" << cplex.getNnodes() << "\t" << cplex.getMIPRelativeGap() <<
-		//	"\t" << soltime << "\t" << cplex.getStatus();
-		//resultados.close();
+		ofstream resultados("resultados_modelo.txt", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus();
+		resultados.close();
 
-
-		cout << "\n\n FO = " << cplex.getObjValue() << endl;
 
 		//cout << cplex.getValue(C_setup) << endl;
 		//cout << cplex.getValue(C_prod) << endl;
@@ -64,8 +70,74 @@ void Modelo::resolver(){
 
 }
 
+void Modelo::RF_Tm1(){
+
+	IloInt i, l, s, t;
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+
+		for (t = 0; t < T - 1; t++) {
+
+			cout << "maior s ==>" <<  W_p * (t + 1) << endl;
+			//restrições de integralidade
+			for (i = 0; i < N; i++) {
+				for (l = 0; l < M; l++) {
+					for (s = W_p * t + 1; s <= W_p * (t + 1); s++) {
+						modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
+					}
+				}
+			}
+
+			//cplex = IloCplex(modelo);
+			cplex.solve();
+			
+			if (t == T - 2)
+				break;
+
+
+			//fixar variáveis
+			IloConstraintArray restricoes(env);
+			for (i = 0; i < N; i++) {
+				for (l = 0; l < M; l++) {
+					IloNumArray vals(env);
+
+					for (s = W_p * t + 1; s <= W_p * (t + 1); s++) {
+						if ( cplex.isExtracted(x[i][l][s]) ) {
+							IloNum val = round(cplex.getValue(x[i][l][s]));
+							restricoes.add(IloConstraint(val == x[i][l][s]));
+						}
+					}
+				}
+			}
+			modelo.add(restricoes);
+
+			//cplex.exportModel("M1.lp");
+		}
+		soltime = cplex.getCplexTime() - soltime;
+		
+		ofstream resultados("resultado_RF_Tm1.csv", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus();
+		resultados.close();
+
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+
+}
+
 void Modelo::criar_modelo() {
-	modelo = IloModel(env);
+	modelo = IloModel(env, "modelo_linear");
 	cplexvar_initiate();
 	fo();
 	restricoes();
@@ -81,11 +153,17 @@ void Modelo::cplexvar_initiate() {
 		}
 	}
 
-	x = IloArray<IloArray<IloBoolVarArray>>(env, N);
+	char strnum[30];
+	x = IloArray<IloArray<IloFloatVarArray>>(env, N);
 	for (i = 0; i < N; i++) {
-		x[i] = IloArray<IloBoolVarArray>(env, M);
+		x[i] = IloArray<IloFloatVarArray>(env, M);
 		for (l = 0; l < M; l++) {
-			x[i][l] = IloBoolVarArray(env, W);
+			x[i][l] = IloFloatVarArray(env, W, 0.0, 1.0);
+			for (s = 0; s < W; s++)	{
+				sprintf_s(strnum, "x(%d,%d,%d)", i, l, s);
+				x[i][l][s].setName(strnum);
+
+			}
 		}
 	}
 

@@ -12,7 +12,7 @@ private:
 
 	IloArray<IloFloatVarArray> I_plus, I_minus;
 	IloArray<IloArray<IloFloatVarArray>> q;
-	IloArray<IloArray<IloBoolVarArray>> x;
+	IloArray<IloArray<IloFloatVarArray>> x;
 	IloArray<IloArray<IloArray<IloFloatVarArray>>> y;
 
 	IloNumVar C_setup, C_prod, C_est, C_Bko;
@@ -28,6 +28,7 @@ public:
 	}
 
 	void resolver();
+	void RF_Tm1();
 
 };
 
