@@ -8,7 +8,7 @@ int main() {
 	//Teste.resolver();
 
 
-	Teste.RF_Tm1(16);
+	Teste.RF_Mc2(2);
 
 	return 0;
 }

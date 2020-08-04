@@ -28,7 +28,7 @@ void Modelo::resolver(){
 		if (!cplex.solve()) {
 			env.error() << "Otimizacao do LP mal-sucedida." << endl;
 			//resultados.open("resultados_MCCP.txt", fstream::app);
-			//resultados << "\t" << cplex.getStatus();
+			//resultados << "\t" << cplex.getStatus() << endl;
 			//resultados.close();
 			return;
 		}
@@ -36,7 +36,7 @@ void Modelo::resolver(){
 
 		ofstream resultados("resultados_modelo.txt", fstream::app);
 		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus();
+			"," << soltime << "," << cplex.getStatus() << endl;
 		resultados.close();
 
 
@@ -123,7 +123,7 @@ void Modelo::RF_Tm1(int k){
 		
 		ofstream resultados("resultado_RF_Tm1.csv", fstream::app);
 		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus();
+			"," << soltime << "," << cplex.getStatus() << endl;
 		resultados.close();
 
 	}
@@ -189,7 +189,7 @@ void Modelo::RF_Tm2(int k){
 
 		ofstream resultados("resultado_RF_Tm2.csv", fstream::app);
 		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus();
+			"," << soltime << "," << cplex.getStatus() << endl;
 		resultados.close();
 
 	}
@@ -203,6 +203,450 @@ void Modelo::RF_Tm2(int k){
 	}
 
 }
+
+void Modelo::RF_Pr1(int k) {
+
+		IloInt i, l, s, particao_it, t;
+		int n_por_particao = N / k;
+		try {
+			criar_modelo();
+			cplex = IloCplex(modelo);
+			cplex.setParam(IloCplex::TiLim, 600/k);
+
+			IloNum soltime;
+			soltime = cplex.getCplexTime();
+
+			/*
+			ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
+			*/
+
+			vector<int> demanda(N, 0);
+			for (i = 0; i < N; i++)	{
+				for (t = 1; t < T; t++)	{
+					demanda[i] += d[i][t];
+				}
+			}
+			vector<int> id(N);
+			i = 0;
+			iota(id.begin(), id.end(), i++); //Initializing
+			sort(id.begin(), id.end(), [&](int i, int j) {return demanda[i] > demanda[j];});
+
+
+			particao_it = 0;
+			while(true){
+				//restrições de integralidade
+				for (i = particao_it; i < particao_it + n_por_particao; i++) {
+					for (l = 0; l < M; l++) {
+						for (s = 1; s < W; s++) {
+							modelo.add(IloConversion(env, x[id[i]][l][s], ILOBOOL));
+						}
+					}
+				}
+
+				//cplex = IloCplex(modelo);
+				cplex.solve();
+
+				if (particao_it + n_por_particao == N)
+					break;
+
+
+				//fixar variáveis
+				IloConstraintArray restricoes(env);
+				for (i = particao_it; i < particao_it + n_por_particao; i++) {
+					for (l = 0; l < M; l++) {
+						IloNumArray vals(env);
+
+						for (s = 1; s < W; s++) {
+							if (cplex.isExtracted(x[id[i]][l][s])) {
+								IloNum val = round(cplex.getValue(x[id[i]][l][s]));
+								restricoes.add(IloConstraint(val == x[id[i]][l][s]));
+							}
+						}
+					}
+				}
+				modelo.add(restricoes);
+
+				//cplex.exportModel("M1.lp");
+				particao_it += n_por_particao;
+			}
+			soltime = cplex.getCplexTime() - soltime;
+
+			ofstream resultados("resultado_RF_Pr1.csv", fstream::app);
+			resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+				"," << soltime << "," << cplex.getStatus() << endl;
+			resultados.close();
+
+		}
+		catch (IloException& e) {
+			cplex.error() << "Erro: " << e.getMessage() << endl;
+			cout << "\nErro na inteira" << endl;
+			return;
+		}
+		catch (...) {
+			cerr << "Outra excecao" << endl;
+		}
+}
+
+void Modelo::RF_Pr2(int k) {
+
+	IloInt i, l, s, particao_it, t;
+	int n_por_particao = N / k;
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::TiLim, 600 / k);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+
+		/*
+		ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
+		*/
+
+		vector<int> demanda(N, 0);
+		for (i = 0; i < N; i++) {
+			for (t = 1; t < T; t++) {
+				demanda[i] += d[i][t];
+			}
+		}
+		vector<int> id(N);
+		i = 0;
+		iota(id.begin(), id.end(), i++); //Initializing
+		sort(id.begin(), id.end(), [&](int i, int j) {return demanda[i] < demanda[j];});
+
+
+		particao_it = 0;
+		while (true) {
+			//restrições de integralidade
+			for (i = particao_it; i < particao_it + n_por_particao; i++) {
+				for (l = 0; l < M; l++) {
+					for (s = 1; s < W; s++) {
+						modelo.add(IloConversion(env, x[id[i]][l][s], ILOBOOL));
+					}
+				}
+			}
+
+			//cplex = IloCplex(modelo);
+			cplex.solve();
+
+			if (particao_it + n_por_particao == N)
+				break;
+
+
+			//fixar variáveis
+			IloConstraintArray restricoes(env);
+			for (i = particao_it; i < particao_it + n_por_particao; i++) {
+				for (l = 0; l < M; l++) {
+					IloNumArray vals(env);
+
+					for (s = 1; s < W; s++) {
+						if (cplex.isExtracted(x[id[i]][l][s])) {
+							IloNum val = round(cplex.getValue(x[id[i]][l][s]));
+							restricoes.add(IloConstraint(val == x[id[i]][l][s]));
+						}
+					}
+				}
+			}
+			modelo.add(restricoes);
+
+			//cplex.exportModel("M1.lp");
+			particao_it += n_por_particao;
+		}
+		soltime = cplex.getCplexTime() - soltime;
+
+		ofstream resultados("resultado_RF_Pr2.csv", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus() << endl;
+		resultados.close();
+
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+}
+
+void Modelo::RF_Pr3(int k) {
+
+	IloInt i, l, s, particao_it, t;
+	int n_por_particao = N / k;
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::TiLim, 600 / k);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+
+		/*
+		ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
+		*/
+
+		vector<int> criticidade(N, M);
+		for (i = 0; i < N; i++) {
+
+			for (auto maq : SP)
+			{
+				for (auto prod : maq)
+				{
+					if (i == prod) {
+						criticidade[i] --;
+						break;
+					}
+				}
+			}
+		}
+		vector<int> id(N);
+		i = 0;
+		iota(id.begin(), id.end(), i++); //Initializing
+		sort(id.begin(), id.end(), [&](int i, int j) {return criticidade[i] > criticidade[j];});
+
+
+		particao_it = 0;
+		while (true) {
+			//restrições de integralidade
+			for (i = particao_it; i < particao_it + n_por_particao; i++) {
+				for (l = 0; l < M; l++) {
+					for (s = 1; s < W; s++) {
+						modelo.add(IloConversion(env, x[id[i]][l][s], ILOBOOL));
+					}
+				}
+			}
+
+			//cplex = IloCplex(modelo);
+			cplex.solve();
+
+			if (particao_it + n_por_particao == N)
+				break;
+
+
+			//fixar variáveis
+			IloConstraintArray restricoes(env);
+			for (i = particao_it; i < particao_it + n_por_particao; i++) {
+				for (l = 0; l < M; l++) {
+					IloNumArray vals(env);
+
+					for (s = 1; s < W; s++) {
+						if (cplex.isExtracted(x[id[i]][l][s])) {
+							IloNum val = round(cplex.getValue(x[id[i]][l][s]));
+							restricoes.add(IloConstraint(val == x[id[i]][l][s]));
+						}
+					}
+				}
+			}
+			modelo.add(restricoes);
+
+			//cplex.exportModel("M1.lp");
+			particao_it += n_por_particao;
+		}
+		soltime = cplex.getCplexTime() - soltime;
+
+		ofstream resultados("resultado_RF_Pr3.csv", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus() << endl;
+		resultados.close();
+
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+}
+
+void Modelo::RF_Mc1(int k) {
+
+	IloInt i, l, s, particao_it, t;
+	int n_por_particao = M / k;
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::TiLim, 600 / k);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+
+		/*
+		ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
+		*/
+
+		vector<float> eficiencia(M, 0);
+
+		for (l = 0; l < M; l++) {
+			for (auto &prod : SP[l])	{
+				eficiencia[l] += p[prod][l];
+			}
+			eficiencia[l] /= SP[l].size();
+		}
+
+		vector<int> id(M);
+		l = 0;
+		iota(id.begin(), id.end(), l++); //Initializing
+		sort(id.begin(), id.end(), [&](int i, int j) {return eficiencia[i] > eficiencia[j];});
+
+
+		particao_it = 0;
+		while (true) {
+			//restrições de integralidade
+			for (i = 0; i < N; i++) {
+				for (l = particao_it; l < particao_it + n_por_particao; l++) {
+					for (s = 1; s < W; s++) {
+						modelo.add(IloConversion(env, x[i][id[l]][s], ILOBOOL));
+					}
+				}
+			}
+
+			//cplex = IloCplex(modelo);
+			cplex.solve();
+
+			if (particao_it + n_por_particao == M)
+				break;
+
+
+			//fixar variáveis
+			IloConstraintArray restricoes(env);
+			for (i = 0; i < N; i++) {
+				for (l = particao_it; l < particao_it + n_por_particao; l++) {
+					IloNumArray vals(env);
+
+					for (s = 1; s < W; s++) {
+						if (cplex.isExtracted(x[i][id[l]][s])) {
+							IloNum val = round(cplex.getValue(x[i][id[l]][s]));
+							restricoes.add(IloConstraint(val == x[i][id[l]][s]));
+						}
+					}
+				}
+			}
+			modelo.add(restricoes);
+
+			//cplex.exportModel("M1.lp");
+			particao_it += n_por_particao;
+		}
+		soltime = cplex.getCplexTime() - soltime;
+
+		ofstream resultados("resultado_RF_Mc1.csv", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus() << endl;
+		resultados.close();
+
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+}
+
+
+void Modelo::RF_Mc2(int k) {
+
+	IloInt i, l, s, particao_it, t;
+	int n_por_particao = M / k;
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::TiLim, 600 / k);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+
+		/*
+		ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
+		*/
+
+		vector<float> criticidade_maquina(M, 0);
+		vector<int> criticidade(N, M);
+		for (i = 0; i < N; i++) {
+
+			for (auto maq : SP)
+			{
+				for (auto prod : maq)
+				{
+					if (i == prod) {
+						criticidade[i] --;
+						break;
+					}
+				}
+			}
+		}
+
+		for (l = 0; l < M; l++) {
+			for (auto prod : SP[l]) {
+				criticidade_maquina[l] += criticidade[prod];
+			}
+		}
+
+		vector<int> id(M);
+		l = 0;
+		iota(id.begin(), id.end(), l++); //Initializing
+		sort(id.begin(), id.end(), [&](int i, int j) {return criticidade_maquina[i] > criticidade_maquina[j];});
+
+
+		particao_it = 0;
+		while (true) {
+			//restrições de integralidade
+			for (i = 0; i < N; i++) {
+				for (l = particao_it; l < particao_it + n_por_particao; l++) {
+					for (s = 1; s < W; s++) {
+						modelo.add(IloConversion(env, x[i][id[l]][s], ILOBOOL));
+					}
+				}
+			}
+
+			//cplex = IloCplex(modelo);
+			cplex.solve();
+
+			if (particao_it + n_por_particao == M)
+				break;
+
+
+			//fixar variáveis
+			IloConstraintArray restricoes(env);
+			for (i = 0; i < N; i++) {
+				for (l = particao_it; l < particao_it + n_por_particao; l++) {
+					IloNumArray vals(env);
+
+					for (s = 1; s < W; s++) {
+						if (cplex.isExtracted(x[i][id[l]][s])) {
+							IloNum val = round(cplex.getValue(x[i][id[l]][s]));
+							restricoes.add(IloConstraint(val == x[i][id[l]][s]));
+						}
+					}
+				}
+			}
+			modelo.add(restricoes);
+
+			//cplex.exportModel("M1.lp");
+			particao_it += n_por_particao;
+		}
+		soltime = cplex.getCplexTime() - soltime;
+
+		ofstream resultados("resultado_RF_Mc1.csv", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus() << endl;
+		resultados.close();
+
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+}
+
 
 void Modelo::criar_modelo() {
 	modelo = IloModel(env, "modelo_linear");
