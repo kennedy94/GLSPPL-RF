@@ -2,6 +2,17 @@
 #include "Problema.h"
 #include <numeric>
 #include <algorithm>
+#include <list>
+
+struct variavel{
+	int i, l, s;
+	variavel(int i, int l, int s) {
+		this->i = i;
+		this->l = l;
+		this->s = s;
+	}
+
+};
 class Modelo :
 	public Problema
 {
@@ -25,21 +36,18 @@ private:
 	void restricoes();
 
 public:
-	Modelo(const char* filename) : Problema(filename) {
-
-	}
+	Modelo(const char* filename) : Problema(filename) {	}
 
 	void resolver();	//Modelo default
-
-	void RF_Tm1(int k);	//Relax-and-fix por tempo a partir de 0
-	void RF_Tm2(int k);	//Relax-and-fix por tempo a partir de T
+	void RELAX_AND_FIX(int k, int estrategia); //Relax-and-fix por máquina com mais produtos criticos
 
 	void RF_Pr1(int k);	//Relax-and-fix por produto a partir de maior demanda
 	void RF_Pr2(int k);	//Relax-and-fix por produto a partir de menor demanda
 	void RF_Pr3(int k);	//Relax-and-fix por produto a partir de maior criticidade
 
-	void RF_Mc1(int k);	//Relax-and-fix por máquina mais rápidas e eficientes
-	void RF_Mc2(int k); //Relax-and-fix por máquina com mais produtos criticos
-
+	list<list<variavel>> RF_Mc1(int k);	//Relax-and-fix por máquina mais rápidas e eficientes
+	list<list<variavel>> RF_Mc2(int k);
+	list<list<variavel>> RF_Tm1(int k);	//Relax-and-fix por tempo a partir de 0
+	list<list<variavel>> RF_Tm2(int k);	//Relax-and-fix por tempo a partir de T
 };
 

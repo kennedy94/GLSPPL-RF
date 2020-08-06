@@ -70,138 +70,56 @@ void Modelo::resolver(){
 
 }
 
-void Modelo::RF_Tm1(int k){
+list<list<variavel>> Modelo::RF_Tm1(int k){
 
 	IloInt i, l, s, t;
 	int n_por_particao = (W - 1) / k;
 
-	try {
-		criar_modelo();
-		cplex = IloCplex(modelo);
+	list<list<variavel>> particoes;
 
-		IloNum soltime;
-		soltime = cplex.getCplexTime();
+	for (t = 1; t <= k; t++)
+	{
+		list<variavel> var_list;
 
-		for (t = 0; t < T - 1; t++) {
-
-			cout << "maior s ==>" << n_por_particao * (t + 1) << endl;
-			//restrições de integralidade
-			for (i = 0; i < N; i++) {
-				for (l = 0; l < M; l++) {
-					for (s = n_por_particao * t + 1; s <= n_por_particao * (t + 1); s++) {
-						modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
-					}
+		for (s = (t - 1) * n_por_particao + 1; s <= t * n_por_particao; s++) {
+			for (l = 0; l < M; l++) {
+				for (i = 0; i < N; i++) {
+					var_list.push_back(variavel(i, l, s));
 				}
 			}
-
-			//cplex = IloCplex(modelo);
-			cplex.solve();
-			
-			if (t == T - 2)
-				break;
-
-
-			//fixar variáveis
-			IloConstraintArray restricoes(env);
-			for (i = 0; i < N; i++) {
-				for (l = 0; l < M; l++) {
-					IloNumArray vals(env);
-
-					for (s = n_por_particao * t + 1; s <= n_por_particao * (t + 1); s++) {
-						if ( cplex.isExtracted(x[i][l][s]) ) {
-							IloNum val = round(cplex.getValue(x[i][l][s]));
-							restricoes.add(IloConstraint(val == x[i][l][s]));
-						}
-					}
-				}
-			}
-			modelo.add(restricoes);
-
-			//cplex.exportModel("M1.lp");
 		}
-		soltime = cplex.getCplexTime() - soltime;
-		
-		ofstream resultados("resultado_RF_Tm1.csv", fstream::app);
-		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus() << endl;
-		resultados.close();
+
+		particoes.push_back(var_list);
+		var_list.clear();
 
 	}
-	catch (IloException& e) {
-		cplex.error() << "Erro: " << e.getMessage() << endl;
-		cout << "\nErro na inteira" << endl;
-		return;
-	}
-	catch (...) {
-		cerr << "Outra excecao" << endl;
-	}
-
+	return particoes;
 }
 
-void Modelo::RF_Tm2(int k){
+list<list<variavel>> Modelo::RF_Tm2(int k) {
+
 	IloInt i, l, s, t;
 	int n_por_particao = (W - 1) / k;
-	try {
-		criar_modelo();
-		cplex = IloCplex(modelo);
 
-		IloNum soltime;
-		soltime = cplex.getCplexTime();
+	list<list<variavel>> particoes;
 
-		for (t = T-2; t > 0; t--) {
+	for (t = k; t >= 1; t--)
+	{
+		list<variavel> var_list;
 
-			cout << "maior s ==>" << W_p * (t + 1) << endl;
-			//restrições de integralidade
-			for (i = 0; i < N; i++) {
-				for (l = 0; l < M; l++) {
-					for (s = n_por_particao * t + 1; s <= n_por_particao * (t + 1); s++) {
-						modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
-					}
+		for (s = (t - 1) * n_por_particao + 1; s <= t * n_por_particao; s++) {
+			for (l = 0; l < M; l++) {
+				for (i = 0; i < N; i++) {
+					var_list.push_back(variavel(i, l, s));
 				}
 			}
-
-			//cplex = IloCplex(modelo);
-			cplex.solve();
-
-			if (t == 1)
-				break;
-
-
-			//fixar variáveis
-			IloConstraintArray restricoes(env);
-			for (i = 0; i < N; i++) {
-				for (l = 0; l < M; l++) {
-					IloNumArray vals(env);
-
-					for (s = n_por_particao * t + 1; s <= n_por_particao * (t + 1); s++) {
-						if (cplex.isExtracted(x[i][l][s])) {
-							IloNum val = round(cplex.getValue(x[i][l][s]));
-							restricoes.add(IloConstraint(val == x[i][l][s]));
-						}
-					}
-				}
-			}
-			modelo.add(restricoes);
-
-			//cplex.exportModel("M1.lp");
 		}
-		soltime = cplex.getCplexTime() - soltime;
 
-		ofstream resultados("resultado_RF_Tm2.csv", fstream::app);
-		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus() << endl;
-		resultados.close();
+		particoes.push_back(var_list);
+		var_list.clear();
 
 	}
-	catch (IloException& e) {
-		cplex.error() << "Erro: " << e.getMessage() << endl;
-		cout << "\nErro na inteira" << endl;
-		return;
-	}
-	catch (...) {
-		cerr << "Outra excecao" << endl;
-	}
-
+	return particoes;
 }
 
 void Modelo::RF_Pr1(int k) {
@@ -228,8 +146,8 @@ void Modelo::RF_Pr1(int k) {
 			}
 			vector<int> id(N);
 			i = 0;
-			iota(id.begin(), id.end(), i++); //Initializing
-			sort(id.begin(), id.end(), [&](int i, int j) {return demanda[i] > demanda[j];});
+			std::iota(id.begin(), id.end(), i++); //Initializing
+			std::sort(id.begin(), id.end(), [&](int i, int j) {return demanda[i] > demanda[j];});
 
 
 			particao_it = 0;
@@ -311,8 +229,8 @@ void Modelo::RF_Pr2(int k) {
 		}
 		vector<int> id(N);
 		i = 0;
-		iota(id.begin(), id.end(), i++); //Initializing
-		sort(id.begin(), id.end(), [&](int i, int j) {return demanda[i] < demanda[j];});
+		std::iota(id.begin(), id.end(), i++); //Initializing
+		std::sort(id.begin(), id.end(), [&](int i, int j) {return demanda[i] < demanda[j];});
 
 
 		particao_it = 0;
@@ -402,8 +320,8 @@ void Modelo::RF_Pr3(int k) {
 		}
 		vector<int> id(N);
 		i = 0;
-		iota(id.begin(), id.end(), i++); //Initializing
-		sort(id.begin(), id.end(), [&](int i, int j) {return criticidade[i] > criticidade[j];});
+		std::iota(id.begin(), id.end(), i++); //Initializing
+		std::sort(id.begin(), id.end(), [&](int i, int j) {return criticidade[i] > criticidade[j];});
 
 
 		particao_it = 0;
@@ -461,10 +379,67 @@ void Modelo::RF_Pr3(int k) {
 	}
 }
 
-void Modelo::RF_Mc1(int k) {
+list<list<variavel>> Modelo::RF_Mc1(int k) {
 
-	IloInt i, l, s, particao_it, t;
+	IloInt i, l, s, t;
 	int n_por_particao = M / k;
+	vector<float> eficiencia(M, 0);
+
+	for (l = 0; l < M; l++) {
+		for (auto &prod : SP[l])	{
+			eficiencia[l] += p[prod][l];
+		}
+		eficiencia[l] /= SP[l].size();
+	}
+
+	vector<int> id(M);
+	l = 0;
+	std::iota(id.begin(), id.end(), l++); //Initializing
+	std::sort(id.begin(), id.end(), [&](int i, int j) {return eficiencia[i] > eficiencia[j];});
+
+	list<list<variavel>> particoes;
+	for (l = 0; l < M; l++) {
+		list<variavel> var_list;
+
+		for (i = 0; i < N; i++) {
+			for (s = 1; s < W; s++) {
+				var_list.push_back(variavel(i, id[l], s));
+			}
+
+		}
+		if ((l + 1) % n_por_particao == 0) {
+			particoes.push_back(var_list);
+			var_list.clear();
+		}
+	}
+
+
+
+	return particoes;
+}
+
+
+void Modelo::RELAX_AND_FIX(int k, int estrategia) {
+	list<list<variavel>> particao;
+	IloInt i, l, s, t;
+
+	switch (estrategia) {
+		case 1:
+			cout << "Estratégia RF_Mc1 escolhida! \n\n";
+			particao = RF_Mc1(k);
+		case 2:
+			cout << "Estratégia RF_Mc2 escolhida! \n\n" ;
+			particao = RF_Mc2(k);
+		case 3:
+			cout << "Estratégia RF_Tm1 escolhida! \n\n";
+			particao = RF_Tm1(k);
+		case 4:
+			cout << "Estratégia RF_Tm1 escolhida! \n\n";
+			particao = RF_Tm2(k);
+		default:
+			break;
+	}
+
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
@@ -473,67 +448,40 @@ void Modelo::RF_Mc1(int k) {
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
 
-		/*
-		ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
-		*/
 
-		vector<float> eficiencia(M, 0);
-
-		for (l = 0; l < M; l++) {
-			for (auto &prod : SP[l])	{
-				eficiencia[l] += p[prod][l];
-			}
-			eficiencia[l] /= SP[l].size();
-		}
-
-		vector<int> id(M);
-		l = 0;
-		iota(id.begin(), id.end(), l++); //Initializing
-		sort(id.begin(), id.end(), [&](int i, int j) {return eficiencia[i] > eficiencia[j];});
-
-
-		particao_it = 0;
-		while (true) {
+		int contador_particoes = 0;
+		for (auto par: particao) {
+			
 			//restrições de integralidade
-			for (i = 0; i < N; i++) {
-				for (l = particao_it; l < particao_it + n_por_particao; l++) {
-					for (s = 1; s < W; s++) {
-						modelo.add(IloConversion(env, x[i][id[l]][s], ILOBOOL));
-					}
-				}
+			cout << endl;
+			for (auto par_i : par) {
+				modelo.add(IloConversion(env, x[par_i.i][par_i.l][par_i.s], ILOBOOL));
 			}
+
 
 			//cplex = IloCplex(modelo);
 			cplex.solve();
 
-			if (particao_it + n_por_particao == M)
+			contador_particoes++;
+			if (contador_particoes == particao.size())
 				break;
 
 
 			//fixar variáveis
 			IloConstraintArray restricoes(env);
-			for (i = 0; i < N; i++) {
-				for (l = particao_it; l < particao_it + n_por_particao; l++) {
-					IloNumArray vals(env);
-
-					for (s = 1; s < W; s++) {
-						if (cplex.isExtracted(x[i][id[l]][s])) {
-							IloNum val = round(cplex.getValue(x[i][id[l]][s]));
-							restricoes.add(IloConstraint(val == x[i][id[l]][s]));
-						}
-					}
-				}
+			for (auto par_i : par) {
+				IloNum val = round(cplex.getValue(x[par_i.i][par_i.l][par_i.s]));
+				restricoes.add(IloConstraint(val == x[par_i.i][par_i.l][par_i.s]));
 			}
-			modelo.add(restricoes);
 
-			//cplex.exportModel("M1.lp");
-			particao_it += n_por_particao;
+			modelo.add(restricoes);
 		}
+
 		soltime = cplex.getCplexTime() - soltime;
 
-		ofstream resultados("resultado_RF_Mc1.csv", fstream::app);
+		ofstream resultados("resultados.csv", fstream::app);
 		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus() << endl;
+			"," << soltime << "," << cplex.getStatus() << "," << estrategia << endl;
 		resultados.close();
 
 	}
@@ -547,104 +495,58 @@ void Modelo::RF_Mc1(int k) {
 	}
 }
 
-
-void Modelo::RF_Mc2(int k) {
-
-	IloInt i, l, s, particao_it, t;
+list<list<variavel>> Modelo::RF_Mc2(int k)
+{
+	IloInt i, l, s, t;
 	int n_por_particao = M / k;
-	try {
-		criar_modelo();
-		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 600 / k);
 
-		IloNum soltime;
-		soltime = cplex.getCplexTime();
+	vector<float> criticidade_maquina(M, 0);
+	vector<int> criticidade(N, M);
+	for (i = 0; i < N; i++) {
 
-		/*
-		ORDENAR OS PRODUTOS POR DEMANDA EM ORDEM DECRESCENTE
-		*/
-
-		vector<float> criticidade_maquina(M, 0);
-		vector<int> criticidade(N, M);
-		for (i = 0; i < N; i++) {
-
-			for (auto maq : SP)
+		for (auto maq : SP)
+		{
+			for (auto prod : maq)
 			{
-				for (auto prod : maq)
-				{
-					if (i == prod) {
-						criticidade[i] --;
-						break;
-					}
+				if (i == prod) {
+					criticidade[i] --;
+					break;
 				}
 			}
 		}
+	}
 
-		for (l = 0; l < M; l++) {
-			for (auto prod : SP[l]) {
-				criticidade_maquina[l] += criticidade[prod];
-			}
+	for (l = 0; l < M; l++) {
+		for (auto prod : SP[l]) {
+			criticidade_maquina[l] += criticidade[prod];
 		}
+	}
 
-		vector<int> id(M);
-		l = 0;
-		iota(id.begin(), id.end(), l++); //Initializing
-		sort(id.begin(), id.end(), [&](int i, int j) {return criticidade_maquina[i] > criticidade_maquina[j];});
+	vector<int> id(M);
+	l = 0;
+	std::iota(id.begin(), id.end(), l++); //Initializing
+	std::sort(id.begin(), id.end(), [&](int i, int j) {return criticidade_maquina[i] > criticidade_maquina[j];});
 
 
-		particao_it = 0;
-		while (true) {
-			//restrições de integralidade
-			for (i = 0; i < N; i++) {
-				for (l = particao_it; l < particao_it + n_por_particao; l++) {
-					for (s = 1; s < W; s++) {
-						modelo.add(IloConversion(env, x[i][id[l]][s], ILOBOOL));
-					}
-				}
+	list<list<variavel>> particoes;
+	for (l = 0; l < M; l++) {
+		list<variavel> var_list;
+		
+		for (i = 0; i < N; i++) {
+			for (s = 1; s < W; s++) {
+				var_list.push_back(variavel(i, id[l], s));
 			}
-
-			//cplex = IloCplex(modelo);
-			cplex.solve();
-
-			if (particao_it + n_por_particao == M)
-				break;
-
-
-			//fixar variáveis
-			IloConstraintArray restricoes(env);
-			for (i = 0; i < N; i++) {
-				for (l = particao_it; l < particao_it + n_por_particao; l++) {
-					IloNumArray vals(env);
-
-					for (s = 1; s < W; s++) {
-						if (cplex.isExtracted(x[i][id[l]][s])) {
-							IloNum val = round(cplex.getValue(x[i][id[l]][s]));
-							restricoes.add(IloConstraint(val == x[i][id[l]][s]));
-						}
-					}
-				}
-			}
-			modelo.add(restricoes);
-
-			//cplex.exportModel("M1.lp");
-			particao_it += n_por_particao;
+			
 		}
-		soltime = cplex.getCplexTime() - soltime;
+		if ((l+1) % n_por_particao == 0) {
+			particoes.push_back(var_list);
+			var_list.clear();
+		}
+	}
 
-		ofstream resultados("resultado_RF_Mc1.csv", fstream::app);
-		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << soltime << "," << cplex.getStatus() << endl;
-		resultados.close();
 
-	}
-	catch (IloException& e) {
-		cplex.error() << "Erro: " << e.getMessage() << endl;
-		cout << "\nErro na inteira" << endl;
-		return;
-	}
-	catch (...) {
-		cerr << "Outra excecao" << endl;
-	}
+
+	return particoes;
 }
 
 

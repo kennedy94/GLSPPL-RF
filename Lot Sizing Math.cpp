@@ -3,12 +3,12 @@
 
 int main() {
 
-	Modelo Teste("IO_PrA2.txt");
+	Modelo Teste("IO_PrA1.txt");
 
 	//Teste.resolver();
 
 
-	Teste.RF_Mc2(2);
+	Teste.RELAX_AND_FIX(8, 4);
 
 	return 0;
 }
