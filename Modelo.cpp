@@ -98,6 +98,89 @@ list<list<variavel>> Modelo::RF_Tm2(int k, list<vector<variavel>> particoes_comp
 	return particoes;
 }
 
+void Modelo::FIX_AND_OPTIMIZE(IloArray<IloArray<IloBoolArray>> x_hat)
+{
+
+	IloInt i, l, s, t;
+	int n_vezes = N,
+		n_var;
+
+	n_var = N / n_vezes;
+
+
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::TiLim, 600 / n_vezes);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+		for ( i = 0; i < N; i++)
+		{
+			for (l = 0; l < M; l++)
+			{
+				for ( s = 0; s < W; s++)
+				{
+					modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
+				}
+			}
+		}
+		int vez = 0;
+
+		while (vez < n_vezes)
+		{
+			IloConstraintArray restricoes(env);
+
+			//fixar variáveis	
+			for (i = vez*n_var; i < (vez + 1) * n_var; i++)
+			{
+				for (l = 0; l < M; l++)
+				{
+					for (s = 0; s < W; s++)
+					{
+						IloNum val;
+
+						if (i < n_var) {
+							val = x_hat[i][l][s];
+						}
+						else {
+							if (cplex.isExtracted(x[i][l][s])){
+								val = round(cplex.getValue(x[i][l][s]));
+							}
+							else {
+								continue;
+							}
+						}
+
+						restricoes.add(IloConstraint(val == x[i][l][s]));
+					}
+				}
+			}
+
+			modelo.add(restricoes);
+			cplex.solve();
+			vez++;
+		}
+
+				
+		soltime = cplex.getCplexTime() - soltime;
+
+		ofstream resultados("resultados.csv", fstream::app);
+		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << soltime << "," << cplex.getStatus() << "," << "Fix And Optimize" << endl;
+		resultados.close();
+
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		std::cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+}
+
 list<list<variavel>> Modelo::RF_Pr1(int k, list<vector<variavel>> particoes_completas) {
 	list<list<variavel>> particoes;
 	IloInt i, l, s, t;
@@ -282,7 +365,7 @@ list<list<variavel>> Modelo::RF_Mc2(int k, list<vector<variavel>> particoes_comp
 	return particoes;
 }
 
-void Modelo::RELAX_AND_FIX(int estrategia, int k) {
+IloArray<IloArray<IloBoolArray>> Modelo::RELAX_AND_FIX(int estrategia, int k, bool _fix_opt) {
 	list<list<variavel>> particao;
 	IloInt i, l, s, t;
 	list<vector<variavel>> particoes_completas;
@@ -336,7 +419,7 @@ void Modelo::RELAX_AND_FIX(int estrategia, int k) {
 		break;
 	default:
 		cerr << "Erro: Nenhuma estrategia escolhdida!" << endl;
-		return;
+		exit(0);
 	}
 
 	try {
@@ -362,7 +445,7 @@ void Modelo::RELAX_AND_FIX(int estrategia, int k) {
 			cplex.solve();
 
 			contador_particoes++;
-			if (contador_particoes == particao.size())
+			if (contador_particoes == particao.size() || _fix_opt)
 				break;
 
 
@@ -375,6 +458,20 @@ void Modelo::RELAX_AND_FIX(int estrategia, int k) {
 
 			modelo.add(restricoes);
 		}
+		IloArray<IloArray<IloBoolArray>> x_hat(env, N);
+		for (i = 0; i < N; i++)	{
+			x_hat[i] = IloArray<IloBoolArray>(env, M);
+			for ( l = 0; l < M; l++) {
+				x_hat[i][l] = IloBoolArray(env, W);
+				for ( s = 0; s < W; s++)
+				{
+					if (cplex.isExtracted(x[i][l][s])) {
+						x_hat[i][l][s] = round(cplex.getValue(x[i][l][s]));
+					}
+				}
+			}
+		}
+
 
 		soltime = cplex.getCplexTime() - soltime;
 
@@ -383,14 +480,17 @@ void Modelo::RELAX_AND_FIX(int estrategia, int k) {
 			"," << soltime << "," << cplex.getStatus() << "," << estrategia << endl;
 		resultados.close();
 
+		return x_hat;
+
 	}
 	catch (IloException& e) {
 		cplex.error() << "Erro: " << e.getMessage() << endl;
 		cout << "\nErro na inteira" << endl;
-		return;
+		exit(0);
 	}
 	catch (...) {
 		cerr << "Outra excecao" << endl;
+		exit(0);
 	}
 }
 
