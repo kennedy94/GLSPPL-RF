@@ -8,7 +8,7 @@ int main() {
 	//Teste.resolver();
 
 
-	Teste.RELAX_AND_FIX(8, 4);
+	Teste.RELAX_AND_FIX(9);
 
 	return 0;
 }

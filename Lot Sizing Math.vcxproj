@@ -154,7 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Lot Sizing Math.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Modelo.cpp" />
     <ClCompile Include="Problema.cpp" />
   </ItemGroup>
