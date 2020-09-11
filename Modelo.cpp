@@ -132,7 +132,7 @@ void Modelo::FIX_AND_OPTIMIZE(IloArray<IloArray<IloBoolArray>> x_hat)
 			IloConstraintArray restricoes(env);
 
 			//fixar variáveis	
-			for (i = vez*n_var; i < (vez + 1) * n_var; i++)
+			for (i = n_var* vez; i < n_var* (vez + 1); i++)
 			{
 				for (l = 0; l < M; l++)
 				{
@@ -394,7 +394,7 @@ IloArray<IloArray<IloBoolArray>> Modelo::RELAX_AND_FIX(int estrategia, int k, bo
 		particao = RF_Tm1(k, particoes_completas);
 		break;
 	case 4:
-		cout << "Estratégia RF_Tm1 escolhida! \n\n";
+		cout << "Estratégia RF_Tm2 escolhida! \n\n";
 		particao = RF_Tm2(k, particoes_completas);
 		break;
 	case 5:
