@@ -1,0 +1,42 @@
+IO_PrB1x.txt,5233.45,5627.17,0.0699688,20.078,Feasible
+IO_PrB1x.txt,5233.45,5627.17,0.0699688,20.093,Feasible
+IO_PrB1x.txt,5233.45,5627.17,0.0699688,20.125,Feasible
+IO_PrC1.txt,13117.9,13119.1,9.22159e-05,11.75,Optimal
+IO_PrB1x.txt,5127.81,5627.17,0.0887421,20.094,Feasible
+IO_PrB1x.txt,5668.71,5668.71,0,2.406,Optimal
+IO_PrB1x.txt,5668.71,5668.71,0,2.125,Optimal
+IO_PrB1x.txt,11787,12286,0.040619,20.094,Feasible
+	Infeasible
+IO_PrB5x.txt,2859.72,2859.72,0,4.797,Optimal
+IO_PrB5x.txt,2773.76,0.5,Optimal
+IO_PrB5x.txt,2859.72,2859.72,0,5.094,Optimal
+IO_PrB1x.txt,5072.41,5072.41,0,0.781,Optimal
+IO_PrB1x.txt,5072.41,5072.41,0,0.531,Optimal
+IO_PrB1x.txt,5072.41,5072.41,0,0.625,Optimal
+IO_PrA1.txt,1923.86,1923.86,0,11.312,Optimal
+	Infeasible
+pequena.txt,40620.5,40620.5,0,0.031,Optimal
+pequena.txt,40620.5,40620.5,0,0.047,Optimal
+pequena.txt,40620.5,40620.5,0,0.031,Optimal
+pequena.txt,40620.5,40620.5,0,0.047,Optimal
+pequena.txt,40620.5,40620.5,0,0.032,Optimal
+pequena.txt,0.5,0.5,0,0.015,Optimal
+pequena.txt,0.5,0.5,0,0.031,Optimal
+pequena.txt,0.5,0.5,0,0.031,Optimal
+pequena.txt,0.5,0.5,0,0.047,Optimal
+pequena.txt,0.5,0.5,0,0.015,Optimal
+pequena.txt,0.5,0.5,0,0.031,Optimal
+pequena.txt,0.5,0.5,0,0.062,Optimal
+pequena.txt,0.5,0.5,0,0.031,Optimal
+pequena.txt,0.5,0.5,0,0.031,Optimal
+pequena.txt,0.6,0.6,0,0.032,Optimal
+pequena.txt,0.6,0.6,0,0.032,Optimal
+	Infeasible
+	Infeasible
+	Infeasible
+	Infeasible
+pequena.txt,2.66,2.66,0,0.047,Optimal
+pequena.txt,2.66,2.66,0,0.031,Optimal
+pequena.txt,2.66,2.66,0,0.046,Optimal
+pequena.txt,294.396,294.396,0,0.079,Optimal
+pequena.txt,294.396,294.396,0,0.063,Optimal

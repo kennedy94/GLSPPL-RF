@@ -25,26 +25,32 @@ protected:
 		W,	//Número de sub-períodos
 		CA, //Capacidade de Armazenagem
 		W_p; //subperiodos por período
+	vector<vector<bool>> l_produz_i;
 
-	vector< vector<float> >
-		AUX,
+	vector<vector<int>>
 		SP,
 		d,	//Demanda do produto i no período t
 		CP,	//Capacidade de produção disponível na máquina l no período t
-		cp,	//Custo de produção do produto i na máquina l
-		p,	//tempo consumido para produção de uma unidade do produto i na máquina l
-		lm,	//lote mínimo do produto i produzido na máquina l
-		x0;	//se maquina l esta prepara para produzir o produto i no inicio
+		lm;	//lote mínimo do produto i produzido na máquina l
 
-	vector<float>
+	vector< vector<double> >
+		AUX,
+		cp,	//Custo de produção do produto i na máquina l
+		p;	//tempo consumido para produção de uma unidade do produto i na máquina l
+
+
+	vector<int>
 		I0_plus,	//qtde de produto i em estoque no inicio
-		I0_minus,	//qtde de produto i com demanda não atendida no inicio
+		I0_minus;	//qtde de produto i com demanda não atendida no inicio
+	vector<double>
 		g,			//custo de atraso de entrega de uma unidade do produto i por período
 		h;			//custo de manutenção de uma unidade do produto i em estoque por período
 
-	vector< vector< vector<float> > >
+	vector< vector< vector<int> > >
 		st, //tempo de setup para produção do produto j imediatamente após o produto i na máquina l
 		cs;	//custo de setup para produzir o produto j imediatamente após o produto i na máquina l
+
+	const char* instancia;
 
 public:
 	Problema(const char* nome);

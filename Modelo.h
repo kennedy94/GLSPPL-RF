@@ -3,6 +3,7 @@
 #include <numeric>
 #include <algorithm>
 #include <list>
+#include <vector>
 
 struct variavel{
 	int i, l, s;
@@ -39,7 +40,8 @@ public:
 	Modelo(const char* filename) : Problema(filename) {	}
 
 	void resolver();	//Modelo default
-	IloArray<IloArray<IloBoolArray>> RELAX_AND_FIX(int estrategia, int k = -1, bool _fix_opt = false); //Relax-and-fix por máquina com mais produtos criticos
+	void resolver_linear();
+	vector<vector<vector<bool>>>  RELAX_AND_FIX(int estrategia, int k = -1, bool _fix_opt = false); //Relax-and-fix por máquina com mais produtos criticos
 
 	list<list<variavel>> RF_Pr1(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por produto a partir de maior demanda
 	list<list<variavel>> RF_Pr2(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por produto a partir de menor demanda
@@ -50,12 +52,14 @@ public:
 	list<list<variavel>> RF_Tm1(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por tempo a partir de 0
 	list<list<variavel>> RF_Tm2(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por tempo a partir de T
 
-	void FIX_AND_OPTIMIZE(IloArray<IloArray<IloBoolArray>> x_hat);
+	void FIX_AND_OPTIMIZE(vector<vector<vector<bool>>>  x_hat);
 
 	list<list<variavel>> HRF_Hb2(list<vector<variavel>> particoes_completas,
 		int k1, int k2, int estrat1, int estrat2);
 
 	list<list<variavel>> HRF_Hb1(list<vector<variavel>> particoes_completas,
 		int k1, int k2, int k3, int estrat1, int estrat2, int estrat3);
+
+	bool teste_de_viabilidade();
 };
 

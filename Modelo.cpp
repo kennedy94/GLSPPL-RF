@@ -19,26 +19,156 @@ void Modelo::resolver(){
 
 		cplex = IloCplex(modelo);
 		cplex.exportModel("Modelo.lp");
-
-		cplex.setParam(IloCplex::TiLim, 600);
+		//cplex.setParam(IloCplex::Param::Emphasis::Numerical, 1);
+		//cplex.setParam(IloCplex::TiLim, 20);
 
 		IloNum soltime;
 		ofstream resultados;
 		soltime = cplex.getCplexTime();
+
 		if (!cplex.solve()) {
 			env.error() << "Otimizacao do LP mal-sucedida." << endl;
 			resultados.open("resultados_modelo.txt", fstream::app);
 			resultados << "\t" << cplex.getStatus() << endl;
 			resultados.close();
-			return;
 		}
 		soltime = cplex.getCplexTime() - soltime;
 
 		resultados.open("resultados_modelo.txt", fstream::app);
-		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+		resultados << instancia << "," << cplex.getBestObjValue() << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
 			"," << soltime << "," << cplex.getStatus() << endl;
 		resultados.close();
+		
+		{
+			/*for (int i = 0; i < N; i++)
+			{
+				for (int l = 0; l < M; l++)
+				{
 
+					for (int s = 0; s < W; s++)
+					{
+						if (cplex.isExtracted(q[i][l][s])) {
+							cout << cplex.getValue(q[i][l][s]) << " ";
+						}
+						else {
+							cout << 0 << " ";
+						}
+					}
+					cout << endl;
+				}
+				cout << "..." << endl;
+			}*/
+
+			/*for (int i = 0; i < N; i++)
+			{
+				for (int l = 0; l < M; l++)
+				{
+
+					for (int s = 0; s < W; s++)
+					{
+						if (cplex.isExtracted(x[i][l][s])) {
+							cout << cplex.getValue(x[i][l][s]) << " ";
+						}
+						else {
+							cout << 0 << " ";
+						}
+					}
+					cout << endl;
+				}
+				cout << "..." << endl;
+			}*/
+			//for (int i = 0; i < N; i++)
+			//{
+			//	for (int j = 0; j < N; j++) {
+			//		for (int l = 0; l < M; l++)
+			//		{
+
+			//			for (int s = 0; s < W; s++)
+			//			{
+			//				if (cplex.isExtracted(y[i][j][l][s])) {
+			//					cout << cplex.getValue(y[i][j][l][s]) << " ";
+			//				}
+			//				else {
+			//					cout << 0 << " ";
+			//				}
+			//			}
+			//			cout << endl;
+			//		}
+			//		cout << "..." << endl;
+			//	}
+			//}
+
+			//for (int i = 0; i < N; i++)
+			//{
+			//	for (int t = 0; t < T; t++)
+			//	{
+			//		if (cplex.isExtracted(I_plus[i][t])) {
+			//			cout << cplex.getValue(I_plus[i][t]) << " ";
+			//		}
+			//		else {
+			//			cout << 0 << " ";
+			//		}
+			//	}
+			//	cout << "..." << endl;
+			//}
+			//for (int i = 0; i < N; i++)
+			//{
+			//	for (int t = 0; t < T; t++)
+			//	{
+			//		if (cplex.isExtracted(I_minus[i][t])) {
+			//			cout << cplex.getValue(I_minus[i][t]) << " ";
+			//		}
+			//		else {
+			//			cout << 0 << " ";
+			//		}
+			//	}
+			//	cout << "..." << endl;
+			//}
+		}
+	}
+	catch (IloException& e) {
+		cerr << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		return;
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+	}
+
+}
+
+void Modelo::resolver_linear()
+{
+	criar_modelo();
+
+
+	//cplex.setParam(IloCplex::TiLim, 3600);
+	try {
+		//desalocar_matrizes();
+		criar_modelo();
+
+		cplex = IloCplex(modelo);
+		//cplex.setParam(IloCplex::Param::Emphasis::Numerical, 1);
+		//cplex.setParam(IloCplex::TiLim, 20);
+
+		IloNum soltime;
+		ofstream resultados;
+		soltime = cplex.getCplexTime();
+
+		if (!cplex.solve()) {
+			env.error() << "Otimizacao do LP mal-sucedida." << endl;
+			resultados.open("resultados_modelo.txt", fstream::app);
+			resultados << "\t" << cplex.getStatus() << endl;
+			resultados.close();
+		}
+		soltime = cplex.getCplexTime() - soltime;
+
+		
+		
+
+		resultados.open("resultados_modelo.txt", fstream::app);
+		resultados << instancia << "," << cplex.getObjValue() << "," << soltime << "," << cplex.getStatus() << endl;
+		resultados.close();
 	}
 	catch (IloException& e) {
 		cerr << "Erro: " << e.getMessage() << endl;
@@ -98,7 +228,7 @@ list<list<variavel>> Modelo::RF_Tm2(int k, list<vector<variavel>> particoes_comp
 	return particoes;
 }
 
-void Modelo::FIX_AND_OPTIMIZE(IloArray<IloArray<IloBoolArray>> x_hat)
+void Modelo::FIX_AND_OPTIMIZE(vector<vector<vector<bool>>> x_hat)
 {
 
 	IloInt i, l, s, t;
@@ -111,7 +241,7 @@ void Modelo::FIX_AND_OPTIMIZE(IloArray<IloArray<IloBoolArray>> x_hat)
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 600 / n_vezes);
+		cplex.setParam(IloCplex::TiLim, 3600 / n_vezes);
 
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
@@ -166,7 +296,7 @@ void Modelo::FIX_AND_OPTIMIZE(IloArray<IloArray<IloBoolArray>> x_hat)
 		soltime = cplex.getCplexTime() - soltime;
 
 		ofstream resultados("resultados.csv", fstream::app);
-		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+		resultados << instancia << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
 			"," << soltime << "," << cplex.getStatus() << "," << "Fix And Optimize" << endl;
 		resultados.close();
 
@@ -365,7 +495,7 @@ list<list<variavel>> Modelo::RF_Mc2(int k, list<vector<variavel>> particoes_comp
 	return particoes;
 }
 
-IloArray<IloArray<IloBoolArray>> Modelo::RELAX_AND_FIX(int estrategia, int k, bool _fix_opt) {
+vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool _fix_opt) {
 	list<list<variavel>> particao;
 	IloInt i, l, s, t;
 	list<vector<variavel>> particoes_completas;
@@ -425,19 +555,21 @@ IloArray<IloArray<IloBoolArray>> Modelo::RELAX_AND_FIX(int estrategia, int k, bo
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 600 / particao.size());
+		cplex.setParam(IloCplex::TiLim, 3600 / particao.size());
 
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
 
 
-		int contador_particoes = 0;
+		int contador_particoes = 0,
+			contador_variaveis_trans = 0;
 		for (auto par : particao) {
 
 			//restrições de integralidade
 			cout << endl;
 			for (auto par_i : par) {
 				modelo.add(IloConversion(env, x[par_i.i][par_i.l][par_i.s], ILOBOOL));
+				contador_variaveis_trans++;
 			}
 
 
@@ -452,36 +584,42 @@ IloArray<IloArray<IloBoolArray>> Modelo::RELAX_AND_FIX(int estrategia, int k, bo
 			//fixar variáveis
 			IloConstraintArray restricoes(env);
 			for (auto par_i : par) {
-				IloNum val = round(cplex.getValue(x[par_i.i][par_i.l][par_i.s]));
+				IloNum val = cplex.getValue(x[par_i.i][par_i.l][par_i.s]);
 				restricoes.add(IloConstraint(val == x[par_i.i][par_i.l][par_i.s]));
 			}
 
 			modelo.add(restricoes);
 		}
-		IloArray<IloArray<IloBoolArray>> x_hat(env, N);
+		vector<vector<vector<bool>>> x_hat(N);
+		vector<vector<vector<double>>> q_hat(N);
 		for (i = 0; i < N; i++)	{
-			x_hat[i] = IloArray<IloBoolArray>(env, M);
+			x_hat[i] = vector<vector<bool>>(M);
+			q_hat[i] = vector<vector<double>>(M);
 			for ( l = 0; l < M; l++) {
-				x_hat[i][l] = IloBoolArray(env, W);
+				x_hat[i][l] = vector<bool>(W);
+				q_hat[i][l] = vector<double>(W);
 				for ( s = 0; s < W; s++)
 				{
 					if (cplex.isExtracted(x[i][l][s])) {
 						x_hat[i][l][s] = round(cplex.getValue(x[i][l][s]));
+						//q_hat[i][l][s] = cplex.getValue(q[i][l][s]);
 					}
 				}
 			}
 		}
+		cout << "Numero de variaveis inteiras = " << contador_variaveis_trans << "!!!!!!!!!!\n\n\n";
 
 
 		soltime = cplex.getCplexTime() - soltime;
 
 		ofstream resultados("resultados.csv", fstream::app);
-		resultados << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+		resultados << instancia << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
 			"," << soltime << "," << cplex.getStatus() << "," << estrategia << endl;
 		resultados.close();
+		cout << cplex.getValue(C_setup) << " " << cplex.getValue(C_prod) << " " << cplex.getValue(C_est)
+			<< " " << cplex.getValue(C_Bko) << endl;
 
 		return x_hat;
-
 	}
 	catch (IloException& e) {
 		cplex.error() << "Erro: " << e.getMessage() << endl;
@@ -492,6 +630,8 @@ IloArray<IloArray<IloBoolArray>> Modelo::RELAX_AND_FIX(int estrategia, int k, bo
 		cerr << "Outra excecao" << endl;
 		exit(0);
 	}
+
+	
 }
 
 void Modelo::criar_modelo() {
@@ -503,23 +643,21 @@ void Modelo::criar_modelo() {
 
 void Modelo::cplexvar_initiate() {
 	IloInt i, j, l, t, s;
-	q = IloArray<IloArray<IloFloatVarArray>>(env, N);
-	for (i = 0; i < N; i++) {
-		q[i] = IloArray<IloFloatVarArray>(env, M);
-		for (l = 0; l < M; l++) {
-			q[i][l] = IloFloatVarArray(env, W, 0.0, IloInfinity);
-		}
-	}
 
 	char strnum[30];
+	q = IloArray<IloArray<IloFloatVarArray>>(env, N);
 	x = IloArray<IloArray<IloFloatVarArray>>(env, N);
 	for (i = 0; i < N; i++) {
 		x[i] = IloArray<IloFloatVarArray>(env, M);
+		q[i] = IloArray<IloFloatVarArray>(env, M);
 		for (l = 0; l < M; l++) {
 			x[i][l] = IloFloatVarArray(env, W, 0.0, 1.0);
+			q[i][l] = IloFloatVarArray(env, W, 0.0, IloInfinity);
 			for (s = 0; s < W; s++)	{
 				sprintf_s(strnum, "x(%d,%d,%d)", i, l, s);
 				x[i][l][s].setName(strnum);
+				sprintf_s(strnum, "q(%d,%d,%d)", i, l, s);
+				q[i][l][s].setName(strnum);
 
 			}
 		}
@@ -533,6 +671,11 @@ void Modelo::cplexvar_initiate() {
 			y[i][j] = IloArray<IloFloatVarArray>(env, M);
 			for (l = 0; l < M; l++) {
 				y[i][j][l] = IloFloatVarArray(env, W, 0.0, 1.0);
+				for (s = 0; s < W; s++)
+				{
+					sprintf_s(strnum, "y(%d,%d,%d,%d)", i, j, l, s);
+					y[i][j][l][s].setName(strnum);
+				}
 			}
 		}
 	}
@@ -541,8 +684,14 @@ void Modelo::cplexvar_initiate() {
 	I_minus = IloArray<IloFloatVarArray>(env, N);
 
 	for (i = 0; i < N; i++) {
-		I_plus[i] = IloFloatVarArray(env, T, 0, IloInfinity);
-		I_minus[i] = IloFloatVarArray(env, T, 0, IloInfinity);
+		I_plus[i] = IloFloatVarArray(env, T, 0.0, IloInfinity);
+		I_minus[i] = IloFloatVarArray(env, T, 0.0, IloInfinity);
+		for ( t = 0; t < T; t++){
+			sprintf_s(strnum, "I_plus(%d,%d)", i, t);
+			I_plus[i][t].setName(strnum);
+			sprintf_s(strnum, "I_minus(%d,%d)", i, t);
+			I_minus[i][t].setName(strnum);
+		}
 	}
 }
 
@@ -550,10 +699,14 @@ void Modelo::fo() {
 	IloInt i, j, t, s, l;
 	OBJETIVO = IloExpr(env);
 
-	C_setup = IloNumVar(env);
-	C_prod = IloNumVar(env);
-	C_est = IloNumVar(env);
-	C_Bko = IloNumVar(env);
+	C_setup = IloNumVar(env, 0.0, IloInfinity);
+	C_setup.setName("Csetup");
+	C_prod = IloNumVar(env, 0.0, IloInfinity);
+	C_prod.setName("Cprod");
+	C_est = IloNumVar(env, 0.0, IloInfinity);
+	C_est.setName("Cest");
+	C_Bko = IloNumVar(env, 0.0, IloInfinity); 
+	C_Bko.setName("C_Bko");
 
 	for (i = 0; i < N; i++) {
 		for (t = 1; t < T; t++) {
@@ -595,7 +748,7 @@ void Modelo::fo() {
 	modelo.add(OBJETIVO == C_setup);
 	OBJETIVO.clear();
 
-	modelo.add(IloMinimize(env, C_setup + C_prod + C_est + C_Bko)).setName("FO");
+	modelo.add(IloMinimize(env, (C_setup + C_prod + C_est + C_Bko))).setName("FO");
 
 }
 
@@ -608,8 +761,9 @@ void Modelo::restricoes() {
 	{
 		for (t = 1; t < T; t++) {
 			for (l = 0; l < M; l++) {
+				if(l_produz_i[l][i])
 				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
-					soma += q[i][l][s];
+					soma += q[i][l][s];	
 				}
 			}
 			modelo.add(I_plus[i][t - 1] - I_minus[i][t - 1] + soma - I_plus[i][t] + I_minus[i][t] == d[i][t]).setName("(02)");
@@ -653,23 +807,15 @@ void Modelo::restricoes() {
 	//(5)
 	for (l = 0; l < M; l++) {
 		for (auto i : SP[l]) {
-			for (t = 1; t < T; t++)
-			{
+			for (t = 1; t < T; t++){
 				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
 					modelo.add(p[i][l] * q[i][l][s] <= CP[l][t] * x[i][l][s]).setName("(05)");
+					//(6)
+					modelo.add(q[i][l][s] >= lm[i][l] * (x[i][l][s] - x[i][l][s - 1])).setName("(06)");
 				}
 			}
 		}
 
-	}
-
-	//(6)
-	for (l = 0; l < M; l++) {
-		for (auto i : SP[l]) {
-			for (s = 1; s < W; s++) {
-				modelo.add(q[i][l][s] >= lm[i][l] * (x[i][l][s] - x[i][l][s - 1])).setName("(06)");
-			}
-		}
 	}
 
 	//(7)
@@ -710,6 +856,139 @@ void Modelo::restricoes() {
 		modelo.add(I_plus[i][0] == I0_plus[i]).setName("(10)");
 	}
 }
+
+bool Modelo::teste_de_viabilidade()
+{
+	IloInt i, j, l, s, t;
+	double soma = 0.0;
+
+	//(2)
+	for (i = 0; i < N; i++)
+	{
+		for (t = 1; t < T; t++) {
+			for (l = 0; l < M; l++) {
+				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+					soma += cplex.getValue(q[i][l][s]);
+				}
+			}
+			if (cplex.getValue(I_plus[i][t - 1]) - cplex.getValue(I_minus[i][t - 1])
+				+ soma - cplex.getValue(I_plus[i][t]) + cplex.getValue(I_minus[i][t]) != d[i][t])
+				return false;
+			soma = 0.0;
+		}
+	}
+
+	//(3)
+	for (t = 0; t < T; t++) {
+		for (i = 0; i < N; i++) {
+			soma += cplex.getValue(I_plus[i][t]);
+		}
+		if (soma > CA)
+			return false;
+		soma = 0.0;
+	}
+
+	//(4)
+	for (l = 0; l < M; l++) {
+		for (t = 1; t < T; t++) {
+
+			for (auto i : SP[l]) {
+				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+					soma += p[i][l] * cplex.getValue(q[i][l][s]);
+				}
+			}
+
+			for (auto i : SP[l]) {
+				for (auto j : SP[l]) {
+					for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+						soma += st[i][j][l] * cplex.getValue(y[i][j][l][s]);
+					}
+				}
+			}
+
+
+			if (soma > CP[l][t])
+				return false;
+			soma = 0.0;
+		}
+	}
+
+	//(5)
+	for (l = 0; l < M; l++) {
+		for (auto i : SP[l]) {
+			for (t = 1; t < T; t++)
+			{
+				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+					if (p[i][l] * cplex.getValue(q[i][l][s]) > CP[l][t] * cplex.getValue(x[i][l][s]))
+						return false;
+				}
+			}
+		}
+
+	}
+
+	//(6)
+	for (l = 0; l < M; l++) {
+		for (auto i : SP[l]) {
+			for (s = 1; s < W; s++) {
+				if (cplex.getValue(q[i][l][s]) < lm[i][l] * (cplex.getValue(x[i][l][s]) -
+					cplex.getValue(x[i][l][s - 1]))) {
+					cout << cplex.getValue(q[i][l][s]) << " < " << lm[i][l] * (cplex.getValue(x[i][l][s]) -
+						cplex.getValue(x[i][l][s - 1])) << endl;
+					return false;
+				}
+			}
+		}
+	}
+
+	//(7)
+	for (l = 0; l < M; l++) {
+		for (s = 1; s < W; s++) {
+
+			for (auto i : SP[l]) {
+				soma += cplex.getValue(x[i][l][s]);
+			}
+
+			if (soma != 1)
+				return false;
+
+			soma = 0.0;
+
+		}
+	}
+
+	//(8)
+	for (l = 0; l < M; l++) {
+		for (auto i : SP[l]) {
+			for (auto j : SP[l]) {
+				for (s = 1; s < W; s++) {
+					if (cplex.getValue(y[i][j][l][s]) < cplex.getValue(x[i][l][s - 1])
+						+ cplex.getValue(x[j][l][s]) - 1)
+						return false;
+				}
+			}
+		}
+	}
+
+	//(9)
+
+	for (l = 0; l < M; l++) {
+		for (i = 0; i < N; i++) {
+			if (cplex.getValue(x[i][l][0]) != 0)
+				return false;
+		}
+	}
+
+	for (i = 0; i < N; i++) {
+		if (cplex.getValue(I_minus[i][0]) != I0_minus[i])
+			return false;
+		if (cplex.getValue(I_plus[i][0]) != I0_plus[i])
+			return false;
+	}
+	return true;
+}
+
+
 
 list<list<variavel>> Modelo::HRF_Hb2(list<vector<variavel>> particoes_completas,
 	int k1, int k2, int estrat1, int estrat2) {
@@ -924,3 +1203,4 @@ list<list<variavel>> Modelo::HRF_Hb1(list<vector<variavel>> particoes_completas,
 
 	return particao;
 }
+
