@@ -20,7 +20,7 @@ void Modelo::resolver(){
 		cplex = IloCplex(modelo);
 		cplex.exportModel("Modelo.lp");
 		//cplex.setParam(IloCplex::Param::Emphasis::Numerical, 1);
-		//cplex.setParam(IloCplex::TiLim, 20);
+		cplex.setParam(IloCplex::TiLim, 3600);
 
 		IloNum soltime;
 		ofstream resultados;

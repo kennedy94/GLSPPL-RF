@@ -13,10 +13,10 @@ int main(int argc, char* argv[]) {
 	//Modelo Teste("IO_PrA1.txt");
 	Modelo Teste(instancia);
 
-	Teste.resolver();
+	//Teste.resolver();
 	//Teste.resolver_linear();
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
-	//Teste.RELAX_AND_FIX(estrategia, k, fix_opt);
+	Teste.RELAX_AND_FIX(estrategia, k, fix_opt);
 	return 0;
 }
