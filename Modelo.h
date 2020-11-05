@@ -5,6 +5,8 @@
 #include <list>
 #include <vector>
 
+
+
 struct variavel{
 	int i, l, s;
 	variavel(int i, int l, int s) {
@@ -31,6 +33,10 @@ private:
 
 	IloNumVar C_setup, C_prod, C_est, C_Bko;
 
+	IloNum tempo_incumbent;
+
+	int nconstraints = 0, nvar = 0;
+
 	void criar_modelo();
 	void cplexvar_initiate();
 	void fo();
@@ -38,6 +44,7 @@ private:
 
 public:
 	Modelo(const char* filename) : Problema(filename) {	}
+
 
 	void resolver();	//Modelo default
 	void resolver_linear();
@@ -52,14 +59,22 @@ public:
 	list<list<variavel>> RF_Tm1(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por tempo a partir de 0
 	list<list<variavel>> RF_Tm2(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por tempo a partir de T
 
-	void FIX_AND_OPTIMIZE(vector<vector<vector<bool>>>  x_hat);
-
-	list<list<variavel>> HRF_Hb2(list<vector<variavel>> particoes_completas,
+	
+	list<list<variavel>> RF_Hb2(list<vector<variavel>> particoes_completas,
 		int k1, int k2, int estrat1, int estrat2);
 
-	list<list<variavel>> HRF_Hb1(list<vector<variavel>> particoes_completas,
+	list<list<variavel>> RF_Hb1(list<vector<variavel>> particoes_completas,
 		int k1, int k2, int k3, int estrat1, int estrat2, int estrat3);
 
+	vector<vector<vector<bool>>>  RF_Hb2_Drt(list<vector<variavel>> particoes_completas,
+		int k1, int k2, int estrat1, int estrat2);
+
+	vector<vector<vector<bool>>>  RF_Pr2_Drt(list<vector<variavel>> particoes_completas,
+		int k);
+
+	void FIX_AND_OPTIMIZE(vector<vector<vector<bool>>>  x_hat);
+
 	bool teste_de_viabilidade();
+	
 };
 

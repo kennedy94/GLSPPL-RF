@@ -238,6 +238,18 @@ Problema::Problema(const char* nome){
 
 	
 	arquivo.close();
+
+	int n_prod_maq = 0;
+	for (int l = 0; l < M; l++){
+		n_prod_maq += SP[l].size();
+	}
+
+	ofstream saida("var_const.csv");
+
+	saida << instancia << "," << n_prod_maq * W << ","
+		<< N * T + T + M * T + 2 * (n_prod_maq * W) + M * W + 2 * (n_prod_maq * 2 * W);
+
+	saida.close();
 }
 
 
