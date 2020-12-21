@@ -17,6 +17,6 @@ int main(int argc, char* argv[]) {
 	//Teste.resolver_linear();
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
-	Teste.RELAX_AND_FIX(estrategia, k, fix_opt);
+	//Teste.RELAX_AND_FIX(estrategia, k, fix_opt);
 	return 0;
 }

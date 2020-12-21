@@ -25,7 +25,7 @@ void Modelo::resolver(){
 	nconst << instancia << "," << nconstraints << "," << nvar << endl;
 
 	nconst.close();
-	return;
+	//return;
 	
 	try {
 		//desalocar_matrizes();
