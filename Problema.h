@@ -46,7 +46,7 @@ protected:
 		g,			//custo de atraso de entrega de uma unidade do produto i por período
 		h;			//custo de manutenção de uma unidade do produto i em estoque por período
 
-	vector< vector< vector<int> > >
+	vector< vector< vector<double> > >
 		st, //tempo de setup para produção do produto j imediatamente após o produto i na máquina l
 		cs;	//custo de setup para produzir o produto j imediatamente após o produto i na máquina l
 

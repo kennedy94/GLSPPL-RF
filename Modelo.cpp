@@ -41,7 +41,7 @@ void Modelo::resolver(){
 
 		cplex = IloCplex(modelo);
 
-		cplex.setParam(IloCplex::Param::MIP::Display, 0);
+		//cplex.setParam(IloCplex::Param::MIP::Display, 0);
 		cplex.setParam(IloCplex::TiLim, 3600);
 		//cplex.setParam(IloCplex::Param::Preprocessing::RepeatPresolve, 0);
 
@@ -59,7 +59,22 @@ void Modelo::resolver(){
 			resultados.close();
 		}
 		soltime = cplex.getCplexTime() - soltime;
+		vector<vector<vector<bool>>> x_hat(N);
 
+		for (int i = 0; i < N; i++)
+		{
+			x_hat[i] = vector<vector<bool>>(M);
+			for (int l = 0; l < M; l++)
+			{
+				x_hat[i][l] = vector<bool>(W);
+				for (int s = 0; s < W; s++)
+				{
+					x_hat[i][l][s] = cplex.getValue(x[i][l][s]);
+				}
+			}
+		}
+
+		
 		resultados.open("resultados_modelo.txt", fstream::app);
 		resultados << instancia << "," << cplex.getBestObjValue() << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
 			"," << tempo_incumbent << "," << soltime << "," << cplex.getNnodes() << endl;

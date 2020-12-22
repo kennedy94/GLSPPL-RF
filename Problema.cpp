@@ -152,11 +152,11 @@ Problema::Problema(const char* nome){
 
 
 	//setup time
-	st = vector<vector<vector<int>>>(N);
+	st = vector<vector<vector<double>>>(N);
 	for (int i = 0; i < N; i++){
-		st[i] = vector< vector< int>>(N);
+		st[i] = vector< vector< double>>(N);
 		for (int j = 0; j < N; j++) {
-			st[i][j] =  vector< int>(M, 0);
+			st[i][j] =  vector< double>(M, 0);
 		}
 	}
 
@@ -220,11 +220,11 @@ Problema::Problema(const char* nome){
 	AUX.clear();
 
 	//custo setup
-	cs = vector<vector<vector<int>>>(N);
+	cs = vector<vector<vector<double>>>(N);
 	for (int i = 0; i < N; i++) {
-		cs[i] = vector< vector< int>>(N);
+		cs[i] = vector< vector< double>>(N);
 		for (int j = 0; j < N; j++) {
-			cs[i][j] = vector< int>(M, 0);
+			cs[i][j] = vector< double>(M, 0);
 		}
 	}
 
