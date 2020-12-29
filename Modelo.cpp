@@ -303,6 +303,7 @@ list<list<variavel>> Modelo::RF_Pr2(int k, list<vector<variavel>> particoes_comp
 
 	for (auto part : particoes_completas) {
 		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
+		bool divisivel = !(part.size() % k);
 		int n_por_particao = part.size() / k;
 		vector<int> demanda(N, 0);
 		for (i = 0; i < N; i++) {
@@ -507,7 +508,11 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 		break;
 	case 10:
 		cout << "Estratégia RF_Hb2_drt escolhida! \n\n";
-		return RF_Hb2_Drt(particoes_completas, 2, 4, 7, 3);
+		return RF_Hb2_Drt(particoes_completas, 2, 4, 6, 3);
+		break;
+	case 11:
+		cout << "Estratégia RF_Hb2 Adaptada escolhida! \n\n";
+		particao = RF_Hb2(particoes_completas, 2, 2, 6, 3);
 		break;
 	default:
 		cerr << "Erro: Nenhuma estrategia escolhdida!" << endl;
@@ -523,7 +528,7 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 		}
 
 		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 100 / particao.size());
+		cplex.setParam(IloCplex::TiLim, 3600 / particao.size());
 
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
@@ -542,7 +547,7 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 
 			tempo_incumbent = soltime;
 			cplex.use(mycallback(env, tempo_incumbent, soltime));
-			//cplex.setParam(IloCplex::Param::MIP::Display, 0);
+			cplex.setParam(IloCplex::Param::MIP::Display, 0);
 			//cplex = IloCplex(modelo);
 			cplex.solve();
 
@@ -572,7 +577,7 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 				{
 					if (cplex.isExtracted(x[i][l][s])) {
 						x_hat[i][l][s] = cplex.getValue(x[i][l][s]);
-						cout << cplex.getValue(x[i][l][s]) << endl;
+						//cout << cplex.getValue(x[i][l][s]) << endl;
 						//q_hat[i][l][s] = cplex.getValue(q[i][l][s]);
 					}
 				}
@@ -1034,7 +1039,7 @@ list<list<variavel>> Modelo::RF_Hb2(list<vector<variavel>> particoes_completas,
 		particao = RF_Tm1(k2, particoes_completas);
 		break;
 	case 4:
-		cout << "Estratégia RF_Tm1 escolhida! \n\n";
+		cout << "Estratégia RF_Tm2 escolhida! \n\n";
 		particao = RF_Tm2(k2, particoes_completas);
 		break;
 	case 5:
@@ -1193,13 +1198,13 @@ vector<vector<vector<bool>>>  Modelo::RF_Hb2_Drt(list<vector<variavel>> particoe
 
 
 	std::cout << "Estratégia RF_Hb2 escolhida! \n\n";
-	particao = RF_Hb2(particoes_completas, 2, 4, 7, 3);
+	particao = RF_Hb2(particoes_completas, 2, 4, 6, 3);
 	
 
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 160 / particao.size());
+		cplex.setParam(IloCplex::TiLim, 3600 / particao.size());
 
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
@@ -1295,7 +1300,7 @@ vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 160 / particao.size());
+		cplex.setParam(IloCplex::TiLim, 3600 / particao.size());
 
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
