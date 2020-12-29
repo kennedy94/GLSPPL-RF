@@ -35,8 +35,308 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="teste.txt" />
+    <Text Include="x64\Release\Testes\abkm2020fig1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\abkm2020bestreaisamp.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\abkm2020bestreais.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\abkm2020bestreais_ampliado.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\abkm2020basicasreais.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\resultados_modelo.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P6.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P10.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P7.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P8.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P12.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P9.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P13.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_Abs.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\P11.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\anotações2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrA1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrA2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrD2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrE1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrE2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrE3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrE4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrE5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrF5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrF4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrF3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrF1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrF2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrD5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrD3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrD4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrD1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrB5x.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrC5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrC4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrC3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrC2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrB2x.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrC1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrA3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrA5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrA4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrB4x.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrB3x.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="x64\Release\Testes\IO_PrB1x.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="testes" />
+    <None Include="x64\Release\Testes\abkm2020resultadosreais.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\resultados.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\var_const.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\relaxfix.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\relaxfix.exe">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\resultadosaleatórias.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestmethodsamp.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestmethodsamp.tex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestmethods.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestmethods.tex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestmethods.dat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020fig1.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020fig1.tex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestreaisamp.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestreaisamp.tex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestreais.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestreais.tex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020fig1.dat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestreais.dat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020bestreaisamp-inc.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020basicasreais.eps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020basicasreais.tex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\abkm2020basicasreais.dat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\hibridas.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\nconstraints.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\linear.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\linear.exe">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\exato.exe">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\exato.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo.zip">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\contar.exe">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\contar.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\hibridas.exe">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\resultados_basicas.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\pequena.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\anotações">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Abs.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Abs1.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Abs2.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Fra1.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Fra2.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_FraA.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_FraB.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Gua.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Hig.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Hig1.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_KCP.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_Pro.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Release\Testes\reartigo\reais_planilhas\IO_TLG.xlsx">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

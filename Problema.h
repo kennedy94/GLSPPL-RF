@@ -16,8 +16,7 @@ class Problema{
 
 	
 
-
-protected:
+	protected:
 	int
 		N,	//Número de produtos
 		T,	//Número de períodos
