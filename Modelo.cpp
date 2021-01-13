@@ -511,8 +511,8 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 		return RF_Hb2_Drt(particoes_completas, 2, 4, 6, 3);
 		break;
 	case 11:
-		cout << "Estratégia RF_Hb2 Adaptada escolhida! \n\n";
-		particao = RF_Hb2(particoes_completas, 2, 2, 6, 3);
+		cout << "Estratégia RF_Pr2_drt escolhida! \n\n";
+		return RF_Pr2_Drt(particoes_completas, k);
 		break;
 	default:
 		cerr << "Erro: Nenhuma estrategia escolhdida!" << endl;
@@ -1300,7 +1300,19 @@ vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
-		cplex.setParam(IloCplex::TiLim, 3600 / particao.size());
+		k = particao.size();
+		vector<double> tilim(k);
+		double unidade = 3600.0/k;
+
+		tilim[0] = unidade + unidade * 1.0 / (k - 1);
+		tilim[(k - 1)] = unidade - unidade * 1.0 / (k - 1);
+		double unidade2 = (tilim[0] - tilim[(k - 1)])/ (k - 1);
+
+		double sum = tilim[0] + tilim[(k - 1)];
+		for (int ii = 1; ii < k - 1; ii++){
+			tilim[ii] = tilim[ii - 1] - unidade2;
+			sum += tilim[ii];
+		}
 
 		IloNum soltime;
 		soltime = cplex.getCplexTime();
@@ -1324,8 +1336,8 @@ vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes
 				contador_variaveis_trans++;
 			}
 
+			cplex.setParam(IloCplex::TiLim, tilim[contador_particoes] / particao.size());
 			contador_particoes++;
-
 			cplex.solve();
 
 			//fixar
