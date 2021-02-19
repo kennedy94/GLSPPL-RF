@@ -7,24 +7,24 @@ ILOINCUMBENTCALLBACK2(mycallback, IloNum&, tempo_incumbent, IloNum, starttime) {
 void Modelo::resolver(){
 	criar_modelo();
 	
-	ofstream nconst;
-	nconst.open("nconstraints.csv", fstream::app);
-	for (int l = 0; l < M; l++)
-	{
-		for (int i = 0; i < N; i++)
-		{
-			if (l_produz_i[l][i]) {
-				for (int s = 1; s < W; s++) {
-					nvar++;
-				}
-			}
-		}
-	}
+	//ofstream nconst;
+	//nconst.open("nconstraints.csv", fstream::app);
+	//for (int l = 0; l < M; l++)
+	//{
+	//	for (int i = 0; i < N; i++)
+	//	{
+	//		if (l_produz_i[l][i]) {
+	//			for (int s = 1; s < W; s++) {
+	//				nvar++;
+	//			}
+	//		}
+	//	}
+	//}
 
-	
-	nconst << instancia << "," << nconstraints << "," << nvar << endl;
+	//
+	//nconst << instancia << "," << nconstraints << "," << nvar << endl;
 
-	nconst.close();
+	//nconst.close();
 	//return;
 	
 	try {
@@ -33,9 +33,12 @@ void Modelo::resolver(){
 		//restrições de integralidade
 		for (IloInt i = 0; i < N; i++) {
 			for (IloInt l = 0; l < M; l++) {
-				for (IloInt s = 0; s < W; s++) {
-					modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
-				}
+				if (l_produz_i[l][i])
+				{
+					for (IloInt s = 0; s < W; s++) {
+						modelo.add(IloConversion(env, x[i][l][s], ILOBOOL));
+					}
+				}	
 			}
 		}
 
@@ -59,21 +62,6 @@ void Modelo::resolver(){
 			resultados.close();
 		}
 		soltime = cplex.getCplexTime() - soltime;
-		vector<vector<vector<bool>>> x_hat(N);
-
-		for (int i = 0; i < N; i++)
-		{
-			x_hat[i] = vector<vector<bool>>(M);
-			for (int l = 0; l < M; l++)
-			{
-				x_hat[i][l] = vector<bool>(W);
-				for (int s = 0; s < W; s++)
-				{
-					x_hat[i][l][s] = cplex.getValue(x[i][l][s]);
-				}
-			}
-		}
-
 		
 		resultados.open("resultados_modelo.txt", fstream::app);
 		resultados << instancia << "," << cplex.getBestObjValue() << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
@@ -103,6 +91,7 @@ void Modelo::resolver_linear()
 		criar_modelo();
 
 		cplex = IloCplex(modelo);
+		cplex.exportModel("P1.lp");
 		//cplex.setParam(IloCplex::Param::Emphasis::Numerical, 1);
 		//cplex.setParam(IloCplex::TiLim, 20);
 
@@ -142,7 +131,7 @@ list<list<variavel>> Modelo::RF_Tm1(int k, list<vector<variavel>> particoes_comp
 
 	for (auto part: particoes_completas){
 		int n_por_particao = part.size() / k;
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 		list<variavel> var_list;
 
 		int cont = 1;
@@ -166,7 +155,7 @@ list<list<variavel>> Modelo::RF_Tm2(int k, list<vector<variavel>> particoes_comp
 
 	for (auto part : particoes_completas) {
 		int n_por_particao = part.size() / k;
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.s > j.s;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.s > j.s;});
 		list<variavel> var_list;
 
 		int cont = 1;
@@ -271,7 +260,7 @@ list<list<variavel>> Modelo::RF_Pr1(int k, list<vector<variavel>> particoes_comp
 	IloInt i, l, s, t;
 
 	for (auto part : particoes_completas) {
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
 		int n_por_particao = part.size() / k;
 		vector<int> demanda(N, 0);
 		for (i = 0; i < N; i++) {
@@ -280,7 +269,7 @@ list<list<variavel>> Modelo::RF_Pr1(int k, list<vector<variavel>> particoes_comp
 			}
 		}
 
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] > demanda[j.i];});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] > demanda[j.i];});
 		list<variavel> var_list;
 
 		int cont = 1;
@@ -302,7 +291,7 @@ list<list<variavel>> Modelo::RF_Pr2(int k, list<vector<variavel>> particoes_comp
 	IloInt i, l, s, t;
 
 	for (auto part : particoes_completas) {
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
 		bool divisivel = !(part.size() % k);
 		int n_por_particao = part.size() / k;
 		vector<int> demanda(N, 0);
@@ -312,7 +301,7 @@ list<list<variavel>> Modelo::RF_Pr2(int k, list<vector<variavel>> particoes_comp
 			}
 		}
 
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i];});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i];});
 		list<variavel> var_list;
 
 		int cont = 1;
@@ -334,7 +323,7 @@ list<list<variavel>> Modelo::RF_Pr3(int k, list<vector<variavel>> particoes_comp
 	IloInt i, l, s, t;
 
 	for (auto part : particoes_completas) {
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i > j.i;});
 		int n_por_particao = part.size() / k;
 		vector<int> criticidade(N, M);
 		for (i = 0; i < N; i++) {
@@ -350,7 +339,7 @@ list<list<variavel>> Modelo::RF_Pr3(int k, list<vector<variavel>> particoes_comp
 			}
 		}
 
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return criticidade[i.i] > criticidade[j.i];});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return criticidade[i.i] > criticidade[j.i];});
 		list<variavel> var_list;
 
 		int cont = 1;
@@ -386,11 +375,11 @@ list<list<variavel>> Modelo::RF_Mc1(int k, list<vector<variavel>> particoes_comp
 
 	for (auto part : particoes_completas) {
 
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.l > j.l;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.l > j.l;});
 		int n_por_particao = part.size() / k;
 		
 	
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return processamento_medio[i.l] < processamento_medio[j.l];});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return processamento_medio[i.l] < processamento_medio[j.l];});
 
 		list<variavel> var_list;
 		int cont = 1;
@@ -434,10 +423,10 @@ list<list<variavel>> Modelo::RF_Mc2(int k, list<vector<variavel>> particoes_comp
 	}
 
 	for (auto part : particoes_completas) {
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.l > j.l;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.l > j.l;});
 		int n_por_particao = part.size() / k;
 		
-		std::sort(part.begin(), part.end(), [&](variavel i, variavel j) {return criticidade_maquina[i.l] > criticidade_maquina[j.l];});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return criticidade_maquina[i.l] > criticidade_maquina[j.l];});
 
 		list<variavel> var_list;
 		int cont = 1;
@@ -454,16 +443,23 @@ list<list<variavel>> Modelo::RF_Mc2(int k, list<vector<variavel>> particoes_comp
 	return particoes;
 }
 
-vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool _fix_opt) {
+void Modelo::RELAX_AND_FIX(int estrategia, string saida, int k, bool _fix_opt) {
 	list<list<variavel>> particao;
 	IloInt i, l, s, t;
 	list<vector<variavel>> particoes_completas;
 
+	
 	vector<variavel> var_list;
 	for ( i = 0; i < N; i++) {
 		for (l = 0; l < M; l++) {
-			for ( s = 1; s < W; s++) {
-				var_list.push_back(variavel(i, l, s));
+			if (l_produz_i[l][i]) {
+				t = 1;
+				for (s = 1; s < W; s++) {
+					var_list.push_back(variavel(i, l, s, t));
+					if (s % W_p == 0)
+						t++;
+
+				}
 			}
 		}
 	}
@@ -471,48 +467,31 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 
 	switch (estrategia) {
 	case 1:
-		cout << "Estratégia RF_Mc1 escolhida! \n\n";
-		particao = RF_Mc1(k, particoes_completas);
+		particao = RF_S1(particoes_completas);
 		break;
 	case 2:
-		cout << "Estratégia RF_Mc2 escolhida! \n\n";
-		particao = RF_Mc2(k, particoes_completas);
+		particao = RF_S2(particoes_completas);
 		break;
 	case 3:
-		cout << "Estratégia RF_Tm1 escolhida! \n\n";
-		particao = RF_Tm1(k, particoes_completas);
+		particao = RF_S3(particoes_completas);
 		break;
 	case 4:
-		cout << "Estratégia RF_Tm2 escolhida! \n\n";
-		particao = RF_Tm2(k, particoes_completas);
+		particao = RF_S4(particoes_completas, k);
 		break;
 	case 5:
-		cout << "Estratégia RF_Pr1 escolhida! \n\n";
-		particao = RF_Pr1(k, particoes_completas);
+		particao = RF_S5(particoes_completas);
 		break;
 	case 6:
-		cout << "Estratégia RF_Pr2 escolhida! \n\n";
-		particao = RF_Pr2(k, particoes_completas);
+		particao = RF_S6(particoes_completas);
 		break;
 	case 7:
-		cout << "Estratégia RF_Pr3 escolhida! \n\n";
-		particao = RF_Pr3(k, particoes_completas);
+		particao = RF_S7(particoes_completas);
 		break;
 	case 8:
-		cout << "Estratégia RF_Hb1 escolhida! \n\n";
-		particao = RF_Hb1(particoes_completas, 2, 2, 2, 6, 3, 1);
-		break;
-	case 9:
-		cout << "Estratégia RF_Hb2 escolhida! \n\n";
-		particao = RF_Hb2(particoes_completas, 2, 4, 6, 3);
+		particao = RF_S8(particoes_completas);
 		break;
 	case 10:
-		cout << "Estratégia RF_Hb2_drt escolhida! \n\n";
-		return RF_Hb2_Drt(particoes_completas, 2, 4, 6, 3);
-		break;
-	case 11:
-		cout << "Estratégia RF_Pr2_drt escolhida! \n\n";
-		return RF_Pr2_Drt(particoes_completas, k);
+		particao = RF_S10(particoes_completas, k);
 		break;
 	default:
 		cerr << "Erro: Nenhuma estrategia escolhdida!" << endl;
@@ -521,12 +500,6 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 
 	try {
 		criar_modelo();
-		for (i = 0; i < N; i++) {
-			for (l = 0; l < M; l++) {
-				modelo.add(IloConversion(env, x[i][l][0], ILOBOOL));
-			}
-		}
-
 		cplex = IloCplex(modelo);
 		cplex.setParam(IloCplex::TiLim, 3600 / particao.size());
 
@@ -546,7 +519,7 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 			}
 
 			tempo_incumbent = soltime;
-			cplex.use(mycallback(env, tempo_incumbent, soltime));
+			//cplex.use(mycallback(env, tempo_incumbent, soltime));
 			cplex.setParam(IloCplex::Param::MIP::Display, 0);
 			//cplex = IloCplex(modelo);
 			cplex.solve();
@@ -565,37 +538,15 @@ vector<vector<vector<bool>>>  Modelo::RELAX_AND_FIX(int estrategia, int k, bool 
 
 			modelo.add(restricoes);
 		}
-		vector<vector<vector<bool>>> x_hat(N);
-		vector<vector<vector<double>>> q_hat(N);
-		for (i = 0; i < N; i++)	{
-			x_hat[i] = vector<vector<bool>>(M);
-			q_hat[i] = vector<vector<double>>(M);
-			for ( l = 0; l < M; l++) {
-				x_hat[i][l] = vector<bool>(W);
-				q_hat[i][l] = vector<double>(W);
-				for ( s = 0; s < W; s++)
-				{
-					if (cplex.isExtracted(x[i][l][s])) {
-						x_hat[i][l][s] = cplex.getValue(x[i][l][s]);
-						//cout << cplex.getValue(x[i][l][s]) << endl;
-						//q_hat[i][l][s] = cplex.getValue(q[i][l][s]);
-					}
-				}
-			}
-		}
+
 		cout << "Numero de variaveis inteiras = " << contador_variaveis_trans << "!!!!!!!!!!\n\n\n";
 
 
 		soltime = cplex.getCplexTime() - soltime;
 
-		ofstream resultados("resultados.csv", fstream::app);
-		resultados << instancia << "," << cplex.getBestObjValue() << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
-			"," << tempo_incumbent << "," << soltime << "," << cplex.getNnodes() << "," << estrategia << endl;
+		ofstream resultados(saida, fstream::app);
+		resultados << instancia << "," << cplex.getObjValue() << "," << soltime << "," << estrategia << "," << k << endl;
 		resultados.close();
-
-		
-
-		return x_hat;
 	}
 	catch (IloException& e) {
 		cplex.error() << "Erro: " << e.getMessage() << endl;
@@ -627,30 +578,34 @@ void Modelo::cplexvar_initiate() {
 		x[i] = IloArray<IloFloatVarArray>(env, M);
 		q[i] = IloArray<IloFloatVarArray>(env, M);
 		for (l = 0; l < M; l++) {
-			x[i][l] = IloFloatVarArray(env, W, 0.0, 1.0);
-			q[i][l] = IloFloatVarArray(env, W, 0.0, IloInfinity);
-			for (s = 0; s < W; s++)	{
-				sprintf_s(strnum, "x(%d,%d,%d)", i, l, s);
-				x[i][l][s].setName(strnum);
-				sprintf_s(strnum, "q(%d,%d,%d)", i, l, s);
-				q[i][l][s].setName(strnum);
-
+			if (l_produz_i[l][i]) {
+				x[i][l] = IloFloatVarArray(env, W, 0.0, 1.0);
+				q[i][l] = IloFloatVarArray(env, W, 0.0, IloInfinity);
+				/*for (s = 0; s < W; s++) {
+					sprintf_s(strnum, "x(%d,%d,%d)", i, l, s);
+					x[i][l][s].setName(strnum);
+					sprintf_s(strnum, "q(%d,%d,%d)", i, l, s);
+					q[i][l][s].setName(strnum);
+				}*/
 			}
 		}
 	}
 
-
+	
 	y = IloArray<IloArray<IloArray<IloFloatVarArray>>>(env, N);
+
 	for (i = 0; i < N; i++) {
 		y[i] = IloArray<IloArray<IloFloatVarArray>>(env, N);
 		for (j = 0; j < N; j++) {
 			y[i][j] = IloArray<IloFloatVarArray>(env, M);
 			for (l = 0; l < M; l++) {
-				y[i][j][l] = IloFloatVarArray(env, W, 0.0, 1.0);
-				for (s = 0; s < W; s++)
-				{
-					sprintf_s(strnum, "y(%d,%d,%d,%d)", i, j, l, s);
-					y[i][j][l][s].setName(strnum);
+				if (l_produz_i[l][i] && l_produz_i[l][j]) {
+					y[i][j][l] = IloFloatVarArray(env, W, 0.0, 1.0);
+					/*for (s = 0; s < W; s++)
+					{
+						sprintf_s(strnum, "y(%d,%d,%d,%d)", i, j, l, s);
+						y[i][j][l][s].setName(strnum);
+					}*/
 				}
 			}
 		}
@@ -662,12 +617,12 @@ void Modelo::cplexvar_initiate() {
 	for (i = 0; i < N; i++) {
 		I_plus[i] = IloFloatVarArray(env, T, 0.0, IloInfinity);
 		I_minus[i] = IloFloatVarArray(env, T, 0.0, IloInfinity);
-		for ( t = 0; t < T; t++){
+		/*for ( t = 0; t < T; t++){
 			sprintf_s(strnum, "I_plus(%d,%d)", i, t);
 			I_plus[i][t].setName(strnum);
 			sprintf_s(strnum, "I_minus(%d,%d)", i, t);
 			I_minus[i][t].setName(strnum);
-		}
+		}*/
 	}
 }
 
@@ -703,9 +658,12 @@ void Modelo::fo() {
 	for (i = 0; i < N; i++) {
 		for (j = 0; j < N; j++) {
 			for (l = 0; l < M; l++) {
-				for (s = 1; s < W; s++) {
-					OBJETIVO += cs[i][j][l] * y[i][j][l][s];
+				if (l_produz_i[l][i] && l_produz_i[l][j]) {
+					for (s = 1; s < W; s++) {
+						OBJETIVO += cs[i][j][l] * y[i][j][l][s];
+					}
 				}
+
 			}
 		}
 	}
@@ -715,9 +673,10 @@ void Modelo::fo() {
 
 	for (i = 0; i < N; i++) {
 		for (l = 0; l < M; l++) {
-			for (s = 1; s < W; s++) {
-				OBJETIVO += cp[i][l] * q[i][l][s];
-
+			if (l_produz_i[l][i]) {
+				for (s = 1; s < W; s++) {
+					OBJETIVO += cp[i][l] * q[i][l][s];
+				}
 			}
 		}
 	}
@@ -725,7 +684,6 @@ void Modelo::fo() {
 	OBJETIVO.clear();
 
 	modelo.add(IloMinimize(env, (C_setup + C_prod + C_est + C_Bko))).setName("FO");
-
 }
 
 void Modelo::restricoes() {
@@ -739,9 +697,10 @@ void Modelo::restricoes() {
 	{
 		for (t = 1; t < T; t++) {
 			for (l = 0; l < M; l++) {
-				if(l_produz_i[l][i])
-				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
-					soma += q[i][l][s];	
+				if (l_produz_i[l][i]) {
+					for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+						soma += q[i][l][s];
+					}
 				}
 			}
 			modelo.add(I_plus[i][t - 1] - I_minus[i][t - 1] + soma - I_plus[i][t] + I_minus[i][t] == d[i][t]).setName("(02)");
@@ -751,7 +710,7 @@ void Modelo::restricoes() {
 	}
 
 	//(3)
-	for (t = 0; t < T; t++) {
+	for (t = 1; t < T; t++) {
 		for (i = 0; i < N; i++) {
 			soma += I_plus[i][t];
 		}
@@ -766,18 +725,15 @@ void Modelo::restricoes() {
 
 			for (auto i : SP[l]) {
 				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
-					soma += p[i][l] * q[i][l][s];
-				}
-			}
 
-			for (auto i : SP[l]) {
-				for (auto j : SP[l]) {
-					for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+					soma += p[i][l] * q[i][l][s];
+
+					for (auto j : SP[l]) {
 						soma += st[i][j][l] * y[i][j][l][s];
+						
 					}
 				}
 			}
-
 
 			modelo.add(soma <= CP[l][t]).setName("(04)");
 			soma.clear();
@@ -787,9 +743,9 @@ void Modelo::restricoes() {
 
 	//(5)
 	for (l = 0; l < M; l++) {
-		for (auto i : SP[l]) {
-			for (t = 1; t < T; t++){
-				for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+		for (t = 1; t < T; t++) {		
+			for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+				for (auto i : SP[l]) {
 					modelo.add(p[i][l] * q[i][l][s] <= CP[l][t] * x[i][l][s]).setName("(05)");
 					nconstraints++;
 					//(6)
@@ -798,8 +754,8 @@ void Modelo::restricoes() {
 				}
 			}
 		}
-
 	}
+
 
 	//(7)
 	for (l = 0; l < M; l++) {
@@ -818,22 +774,24 @@ void Modelo::restricoes() {
 
 	//(8)
 	for (l = 0; l < M; l++) {
-		for (auto i : SP[l]) {
-			for (auto j : SP[l]) {
-				for (s = 1; s < W; s++) {
+		for (s = 1; s < W; s++) {
+			for (auto i : SP[l]) {
+				for (auto j : SP[l]) {
 					modelo.add(y[i][j][l][s] >= x[i][l][s - 1] + x[j][l][s] - 1).setName("(08)");
 					nconstraints++;
 				}
 			}
 		}
 	}
+		
+	
 
 	//(9)
 
 	for (l = 0; l < M; l++) {
-		for (i = 0; i < N; i++) {
-			modelo.add(x[i][l][0] == 0).setName("(09)");
+		for (auto i : SP[l]) {
 			nconstraints++;
+			modelo.add(x[i][l][0] == 0).setName("(09)");
 		}
 	}
 
@@ -1191,7 +1149,7 @@ list<list<variavel>> Modelo::RF_Hb1(list<vector<variavel>> particoes_completas,
 	return particao;
 }
 
-vector<vector<vector<bool>>>  Modelo::RF_Hb2_Drt(list<vector<variavel>> particoes_completas, int k1, int k2, int estrat1, int estrat2)
+void  Modelo::RF_Hb2_Drt(list<vector<variavel>> particoes_completas, int k1, int k2, int estrat1, int estrat2)
 {
 	list<list<variavel>> particao;
 	IloInt i, l, s, t;
@@ -1245,23 +1203,6 @@ vector<vector<vector<bool>>>  Modelo::RF_Hb2_Drt(list<vector<variavel>> particoe
 
 		cplex.solve();
 
-		vector<vector<vector<bool>>> x_hat(N);
-		vector<vector<vector<double>>> q_hat(N);
-		for (i = 0; i < N; i++) {
-			x_hat[i] = vector<vector<bool>>(M);
-			q_hat[i] = vector<vector<double>>(M);
-			for (l = 0; l < M; l++) {
-				x_hat[i][l] = vector<bool>(W);
-				q_hat[i][l] = vector<double>(W);
-				for (s = 0; s < W; s++)
-				{
-					if (cplex.isExtracted(x[i][l][s])) {
-						x_hat[i][l][s] = round(cplex.getValue(x[i][l][s]));
-						//q_hat[i][l][s] = cplex.getValue(q[i][l][s]);
-					}
-				}
-			}
-		}
 		cout << "Numero de variaveis inteiras = " << contador_variaveis_trans << "!!!!!!!!!!\n\n\n";
 
 
@@ -1273,8 +1214,6 @@ vector<vector<vector<bool>>>  Modelo::RF_Hb2_Drt(list<vector<variavel>> particoe
 		resultados.close();
 		cout << cplex.getValue(C_setup) << " " << cplex.getValue(C_prod) << " " << cplex.getValue(C_est)
 			<< " " << cplex.getValue(C_Bko) << endl;
-
-		return x_hat;
 	}
 	catch (IloException& e) {
 		cplex.error() << "Erro: " << e.getMessage() << endl;
@@ -1287,19 +1226,64 @@ vector<vector<vector<bool>>>  Modelo::RF_Hb2_Drt(list<vector<variavel>> particoe
 	}
 }
 
-vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes_completas, int k)
+void Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes_completas, int k)
 {
 	list<list<variavel>> particao;
 	IloInt i, l, s, t;
 
 
-	std::cout << "Estratégia RF_Hb2 escolhida! \n\n";
-	particao = RF_Pr2(k, particoes_completas);
+	std::cout << "Estratégia Modificada escolhida! \n\n";
+
+	int metodo = 8;
+	switch (metodo)
+	{
+	case 1:
+		cout << "Estratégia RF_Mc1 escolhida! \n\n";
+		particao = RF_Mc1(k, particoes_completas);
+		break;
+	case 2:
+		cout << "Estratégia RF_Mc2 escolhida! \n\n";
+		particao = RF_Mc2(k, particoes_completas);
+		break;
+	case 3:
+		cout << "Estratégia RF_Tm1 escolhida! \n\n";
+		particao = RF_Tm1(k, particoes_completas);
+		break;
+	case 4:
+		cout << "Estratégia RF_Tm2 escolhida! \n\n";
+		particao = RF_Tm2(k, particoes_completas);
+		break;
+	case 5:
+		cout << "Estratégia RF_Pr1 escolhida! \n\n";
+		particao = RF_Pr1(k, particoes_completas);
+		break;
+	case 6:
+		cout << "Estratégia RF_Pr2 escolhida! \n\n";
+		particao = RF_Pr2(k, particoes_completas);
+		break;
+	case 7:
+		cout << "Estratégia RF_Pr3 escolhida! \n\n";
+		particao = RF_Pr3(k, particoes_completas);
+		break;
+	case 8:
+		cout << "Estratégia RF_Hb1 escolhida! \n\n";
+		particao = RF_Hb1(particoes_completas, 2, 2, 2, 6, 3, 1);
+		break;
+	case 9:
+		cout << "Estratégia RF_Hb2 escolhida! \n\n";
+		particao = RF_Hb2(particoes_completas, 2, 4, 6, 3);
+		break;
+	default:
+		cerr << "ERRO" << endl;
+		exit(-1);
+	}
 
 
+	
 	try {
 		criar_modelo();
 		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::Param::MIP::Display, 0);
 		k = particao.size();
 		vector<double> tilim(k);
 		double unidade = 3600.0/k;
@@ -1323,53 +1307,38 @@ vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes
 
 		//integralidade na primeira partição
 		list<list<variavel>>::iterator anterior = particao.begin();
-		for (auto par_i : *anterior) {
-			modelo.add(IloConversion(env, x[par_i.i][par_i.l][par_i.s], ILOBOOL));
-			contador_variaveis_trans++;
-		}
+		for (auto par : particao) {
 
-		//a partir da segunda
-		for (list<list<variavel>>::iterator par = next(particao.begin(), 1); par != particao.end(); par++) {
 			//restrições de integralidade
-			for (auto par_i : *par) {
+			cout << endl;
+			for (auto par_i : par) {
 				modelo.add(IloConversion(env, x[par_i.i][par_i.l][par_i.s], ILOBOOL));
 				contador_variaveis_trans++;
 			}
 
-			cplex.setParam(IloCplex::TiLim, tilim[contador_particoes] / particao.size());
-			contador_particoes++;
+			tempo_incumbent = soltime;
+			cplex.setParam(IloCplex::TiLim, tilim[contador_particoes]);
+			cplex.use(mycallback(env, tempo_incumbent, soltime));
+			cplex.setParam(IloCplex::Param::MIP::Display, 0);
+			//cplex = IloCplex(modelo);
 			cplex.solve();
 
-			//fixar
+			contador_particoes++;
+			if (contador_particoes == particao.size())
+				break;
+
+
+			//fixar variáveis
 			IloConstraintArray restricoes(env);
-			for (auto par_i : *anterior) {
+			for (auto par_i : par) {
 				IloNum val = cplex.getValue(x[par_i.i][par_i.l][par_i.s]);
 				restricoes.add(IloConstraint(val == x[par_i.i][par_i.l][par_i.s]));
 			}
-			anterior++;
 
 			modelo.add(restricoes);
 		}
 
-		cplex.solve();
 
-		vector<vector<vector<bool>>> x_hat(N);
-		vector<vector<vector<double>>> q_hat(N);
-		for (i = 0; i < N; i++) {
-			x_hat[i] = vector<vector<bool>>(M);
-			q_hat[i] = vector<vector<double>>(M);
-			for (l = 0; l < M; l++) {
-				x_hat[i][l] = vector<bool>(W);
-				q_hat[i][l] = vector<double>(W);
-				for (s = 0; s < W; s++)
-				{
-					if (cplex.isExtracted(x[i][l][s])) {
-						x_hat[i][l][s] = round(cplex.getValue(x[i][l][s]));
-						//q_hat[i][l][s] = cplex.getValue(q[i][l][s]);
-					}
-				}
-			}
-		}
 		cout << "Numero de variaveis inteiras = " << contador_variaveis_trans << "!!!!!!!!!!\n\n\n";
 
 
@@ -1381,8 +1350,6 @@ vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes
 		resultados.close();
 		cout << cplex.getValue(C_setup) << " " << cplex.getValue(C_prod) << " " << cplex.getValue(C_est)
 			<< " " << cplex.getValue(C_Bko) << endl;
-
-		return x_hat;
 	}
 	catch (IloException& e) {
 		cplex.error() << "Erro: " << e.getMessage() << endl;
@@ -1394,3 +1361,615 @@ vector<vector<vector<bool>>> Modelo::RF_Pr2_Drt(list<vector<variavel>> particoes
 		exit(0);
 	}
 }
+
+void Modelo::RELAX_AND_FIX_Estrat1(int k) {
+	k = N;
+
+	IloInt i, l, s, t;
+
+	vector<variavel> particoes_completas;
+	vector<vector<vector<double>>> dist(N);
+
+	for (i = 0; i < N; i++) {
+		dist[i] = vector<vector<double>>(M);
+		for (l = 0; l < M; l++) {
+			dist[i][l] = vector<double>(W, 0.0);
+			if (l_produz_i[l][i]) {
+				for (s = 1; s < W; s++) {
+					particoes_completas.push_back(variavel(i, l, s, s/W_p));
+				}
+			}
+		}
+	}
+	
+	try {
+		criar_modelo();
+		cplex = IloCplex(modelo);
+		cplex.setParam(IloCplex::TiLim, 3600 / k);
+
+		IloNum soltime;
+		soltime = cplex.getCplexTime();
+
+		//resolver linear
+		cplex.setParam(IloCplex::Param::MIP::Display, 0);
+		cplex.solve();
+
+		for (i = 0; i < N; i++) {
+			for (l = 0; l < M; l++) {
+				if (l_produz_i[l][i]) {
+					for (s = 1; s < W; s++) {
+						dist[i][l][s] = min(cplex.getValue(x[i][l][s]), 1.0 - cplex.getValue(x[i][l][s]));
+					}
+				}
+			}
+		}
+		//ordenar partições por distância
+		std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return dist[i.i][i.l][i.s] < dist[j.i][j.l][j.s];});
+		int nvar = ceil((double)particoes_completas.size()/k);
+
+
+		while(true) {
+
+			vector<variavel> aux;
+			//restrições de integralidade
+			for (int it = 0; it < min(nvar, (int)particoes_completas.size()); it++)
+			{
+				auto par = particoes_completas.back();
+				modelo.add(IloConversion(env, x[par.i][par.l][par.s], ILOBOOL));
+				aux.push_back(par);
+				particoes_completas.pop_back();
+			}
+
+			tempo_incumbent = soltime;
+			cplex.use(mycallback(env, tempo_incumbent, soltime));
+			cplex.solve();
+			if (particoes_completas.empty())
+				break;
+
+			for (i = 0; i < N; i++) {
+				for (l = 0; l < M; l++) {
+					if (l_produz_i[l][i]) {
+						for (s = 1; s < W; s++) {
+							dist[i][l][s] = min(cplex.getValue(x[i][l][s]), 1 - cplex.getValue(x[i][l][s]));
+						}
+					}
+				}
+			}
+
+			std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return dist[i.i][i.l][i.s] > dist[j.i][j.l][j.s];});
+
+
+			//fixar variáveis
+			IloConstraintArray restricoes(env);
+			for (auto par_i : aux) {
+				IloNum val = cplex.getValue(x[par_i.i][par_i.l][par_i.s]);
+				restricoes.add(IloConstraint(val == x[par_i.i][par_i.l][par_i.s]));
+			}
+
+			modelo.add(restricoes);
+		}
+
+
+		soltime = cplex.getCplexTime() - soltime;
+
+		ofstream resultados("resultados.csv", fstream::app);
+		resultados << instancia << "," << cplex.getBestObjValue() << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
+			"," << tempo_incumbent << "," << soltime << "," << cplex.getNnodes() << endl;
+		resultados.close();
+	}
+	catch (IloException& e) {
+		cplex.error() << "Erro: " << e.getMessage() << endl;
+		cout << "\nErro na inteira" << endl;
+		exit(0);
+	}
+	catch (...) {
+		cerr << "Outra excecao" << endl;
+		exit(0);
+	}
+
+
+}
+
+list<list<variavel>> Modelo::RF_S1(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = (T - 1);
+
+	int N_iten_por_part = (T - 1) / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+		int n_por_particao = ceil((double)part.size() / k);
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().t,
+			ii = part.front().t,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.t;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+list<list<variavel>> Modelo::RF_S2(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = (T - 1);
+	int N_iten_por_part = (T-1) / k;
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+		int n_por_particao = ceil((double)part.size() / k);
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.t < j.t;});
+		vector<int> demanda_periodo(T, 0);
+		for ( t = 0; t < T; t++){
+			for (i = 0; i < N; i++) {
+				demanda_periodo[t] += d[i][t];
+			}
+		}
+
+		
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda_periodo[i.t] > demanda_periodo[j.t];});
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().t,
+			ii = part.front().t,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.t;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+list<list<variavel>> Modelo::RF_S3(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = N;
+	int N_iten_por_part = N / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+
+		vector<int> demanda(N, 0);
+		for (i = 0; i < N; i++) {
+			for (t = 1; t < T; t++) {
+				demanda[i] += d[i][t];
+			}
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] > demanda[j.i];});
+
+
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().i,
+			ii = part.front().i,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.i;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+
+/*
+list<list<variavel>> Modelo::RF_S4(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = N;
+	int N_iten_por_part = N / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+
+		vector<int> demanda(N, 0);
+		for (i = 0; i < N; i++) {
+			for (t = 1; t < T; t++) {
+				demanda[i] += d[i][t];
+			}
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i];});
+
+
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().i,
+			ii = part.front().i,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.i;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}*/
+list<list<variavel>> Modelo::RF_S4(list<vector<variavel>> particoes_completas, int K) {
+	list<list<variavel>> particoes;
+
+	IloInt i, l, s, t;
+
+
+	for (auto &part : particoes_completas) {
+
+		int n_var_part = ceil((double)part.size() / K);
+
+		vector<int> demanda(N, 0);
+		for (i = 0; i < N; i++) {
+			for (t = 1; t < T; t++) {
+				demanda[i] += d[i][t];
+			}
+		}
+
+		for (auto& var : part) {
+			var.influ += cp[var.i][var.l];
+			for (int j = 0; j < N; j++)
+			{
+				if (l_produz_i[var.l][j]) {
+					var.influ += cs[var.i][j][var.l];
+				}
+			}
+		}
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i];});
+
+
+		list<variavel> var_list;
+
+		int cont = 0;
+
+		for (auto &var : part) {
+			cont++;
+			var_list.push_back(var);
+
+			if (cont % n_var_part  == 0|| cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+			}
+
+			
+		}
+	}
+
+	return particoes;
+}
+
+list<list<variavel>> Modelo::RF_S5(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = N;
+	int N_iten_por_part = N / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+
+		vector<int> flexibilidade(N, 0);
+
+		for (i = 0; i < N; i++) {
+			for (l = 0; l < M; l++)
+			{
+				if (l_produz_i[l][i])
+				{
+					flexibilidade[i]++;
+				}
+				
+			}
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
+
+
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().i,
+			ii = part.front().i,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.i;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+list<list<variavel>> Modelo::RF_S6(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = M;
+	int N_iten_por_part = M / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+
+		vector<double> eficiencia(M, 0);
+		for (l = 0; l < M; l++) {
+			for (i = 0; i < N; i++) {
+				if (l_produz_i[l][i]) {
+					eficiencia[l] += p[i][l] + cp[i][l];
+				}
+			}
+			eficiencia[l] /= (double) CP[l].size(); //cp tem a mesma cardinalidade de \cal I _ \ell por isso que usei ele
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return eficiencia[i.l] < eficiencia[j.l];});
+
+
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().l,
+			ii = part.front().l,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.l;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+list<list<variavel>> Modelo::RF_S7(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = M;
+	int N_iten_por_part = M / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+
+		vector<double> eficiencia(M, 0);
+		for (l = 0; l < M; l++) {
+			for (i = 0; i < N; i++) {
+				if (l_produz_i[l][i]) {
+					eficiencia[l] += p[i][l] + cp[i][l];
+				}
+			}
+			eficiencia[l] /= (double) CP[l].size(); //cp tem a mesma cardinalidade de \cal I _ i por isso que usei ele
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return eficiencia[i.l] > eficiencia[j.l];});
+
+
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().l,
+			ii = part.front().l,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.l;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+list<list<variavel>> Modelo::RF_S8(list<vector<variavel>> particoes_completas) {
+	list<list<variavel>> particoes;
+	int k = M;
+	int N_iten_por_part = M / k;
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+
+		vector<int> criticidade(M, 0);
+		for (l = 0; l < M; l++) {
+			int min = INT_MAX;
+
+			for (i = 0; i < N; i++) {
+				if (l_produz_i[l][i] && SP[i].size() < min) {
+					min = SP[i].size();
+				}
+			}
+			criticidade[l] = M - min;
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
+
+
+		list<variavel> var_list;
+
+		int ii_anterior = part.front().l,
+			ii = part.front().l,
+			cont = 0,
+			proxima = 1;
+
+		for (auto var : part) {
+			ii = var.l;
+			cont++;
+			if (ii != ii_anterior)
+				proxima++;
+
+
+			if (proxima > N_iten_por_part || cont == part.size()) { //tá adaptado para K = N, senão tem q mudar
+				particoes.push_back(var_list);
+				var_list.clear();
+				proxima = 1;
+			}
+
+			var_list.push_back(var);
+
+			ii_anterior = ii;
+		}
+	}
+
+	return particoes;
+}
+
+
+list<list<variavel>> Modelo::RF_S10(list<vector<variavel>> particoes_completas, int k) {
+	list<list<variavel>> particoes;
+	
+
+	IloInt i, l, s, t;
+
+	for (auto part : particoes_completas) {
+		int N_iten_por_part = ceil((double) part.size() / k);
+		
+
+		for (auto &var : part) {
+			var.influ += cp[var.i][var.l];
+			for (int j = 0; j < N; j++)
+			{
+				if (l_produz_i[var.l][j]) {
+					var.influ += cs[var.i][j][var.l];
+				}
+			}
+		}
+
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+
+
+		list<variavel> var_list;
+
+		int cont = 0;
+
+
+		for (auto var : part) {
+			cont++;
+			var_list.push_back(var);
+
+			if (((cont % N_iten_por_part) == 0) || (cont == part.size())) {
+				particoes.push_back(var_list);
+				var_list.clear();
+
+			}
+		}
+	}
+
+	return particoes;
+}
+

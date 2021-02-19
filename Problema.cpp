@@ -232,8 +232,11 @@ Problema::Problema(const char* nome){
 		for (auto i : SP[l]) {
 			for (auto j : SP[l]) {
 				arquivo >> cs[i][j][l];
+				cout << cs[i][j][l] << " ";
 			}
+			cout << endl;
 		}		
+		cout << endl;
 	}
 
 	
