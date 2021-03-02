@@ -13,9 +13,6 @@ using namespace std;
 
 
 class Problema{
-
-	
-
 	protected:
 	int
 		N,	//Número de produtos

@@ -8,7 +8,7 @@
 
 
 struct variavel{
-	int i, l, s, t, influ;
+	int i, l, s, t, influ, dist;
 	variavel(int i, int l, int s, int t) {
 		this->i = i;
 		this->l = l;
@@ -51,7 +51,7 @@ public:
 	void
 		resolver(),	//Modelo default
 		resolver_linear(),
-		RELAX_AND_FIX(int estrategia, string saida, int k = -1, bool _fix_opt = false); //Relax-and-fix por máquina com mais produtos criticos
+		RELAX_AND_FIX(int estrategia, const char* saida, int k = -1, bool _fix_opt = false); //Relax-and-fix por máquina com mais produtos criticos
 
 	list<list<variavel>>
 		RF_Pr1(int k, list<vector<variavel>> particoes_completas),	//Relax-and-fix por produto a partir de maior demanda

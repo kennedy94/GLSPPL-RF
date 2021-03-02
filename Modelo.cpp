@@ -45,7 +45,7 @@ void Modelo::resolver(){
 		cplex = IloCplex(modelo);
 
 		//cplex.setParam(IloCplex::Param::MIP::Display, 0);
-		cplex.setParam(IloCplex::TiLim, 3600);
+		cplex.setParam(IloCplex::TiLim, 100);
 		//cplex.setParam(IloCplex::Param::Preprocessing::RepeatPresolve, 0);
 
 		IloNum soltime;
@@ -67,6 +67,111 @@ void Modelo::resolver(){
 		resultados << instancia << "," << cplex.getBestObjValue() << "," << cplex.getObjValue() << "," << cplex.getMIPRelativeGap() <<
 			"," << tempo_incumbent << "," << soltime << "," << cplex.getNnodes() << endl;
 		resultados.close();
+
+		resultados.open("solucao.txt", fstream::app);
+		resultados << "q =" << endl;
+		for (IloInt l = 0; l < M; l++) {
+			for (IloInt i = 0; i < N; i++) {
+				if (l_produz_i[l][i])
+				{
+					for (IloInt s = 0; s < W; s++) {
+						//if (cplex.isExtracted(x[i][l][s])) {
+						//	if (cplex.getValue(x[i][l][s]) != 0.0) {
+						//		resultados << "x " << i << "," << l << "," << s << "=" << cplex.getValue(x[i][l][s]) << endl;
+						//	}
+						//}
+						if (cplex.isExtracted(q[i][l][s])) {
+							if (cplex.getValue(q[i][l][s]) > 0.000001) {
+								resultados << cplex.getValue(q[i][l][s]) << ",";
+							}
+							else {
+								resultados << ",";
+							}
+						}
+						else {
+							resultados << ",";
+						}
+						
+					}
+				}
+				resultados << endl;
+			}
+			resultados << endl << endl;
+		}
+
+		resultados << "x =" << endl;
+		for (IloInt l = 0; l < M; l++) {
+			for (IloInt i = 0; i < N; i++) {
+				if (l_produz_i[l][i])
+				{
+					for (IloInt s = 0; s < W; s++) {
+
+						if (cplex.isExtracted(x[i][l][s])) {
+							if (cplex.getValue(x[i][l][s]) > 0.000001) {
+								resultados << cplex.getValue(x[i][l][s]) << ",";
+							}
+							else {
+								resultados << ",";
+							}
+						}
+						else {
+							resultados << ",";
+						}
+
+					}
+				}
+				resultados << endl;
+			}
+			resultados << endl << endl;
+		}
+
+
+		for (IloInt i = 0; i < N; i++) {
+			for (IloInt j = 0; j < N; j++) {
+				for (IloInt l = 0; l < M; l++) {
+					if (l_produz_i[l][i] && l_produz_i[l][j])
+					{
+						for (IloInt s = 0; s < W; s++) {
+							//if (cplex.isExtracted(y[i][j][l][s])) {
+							//	if (cplex.getValue(y[i][j][l][s]) != 0.0) {
+							//		resultados << "y " << i << "," << j << "," << l << "," << s << "=" << cplex.getValue(y[i][j][l][s]) << endl;
+							//	}
+							//}
+						}
+					}
+				}
+			}
+		}
+
+		resultados << "I_plus =" << endl;
+		for (IloInt i = 0; i < N; i++) {
+			for (IloInt t = 0; t < T; t++) {
+				if (cplex.isExtracted(I_plus[i][t])) {
+					resultados << cplex.getValue(I_plus[i][t]) << ",";
+				}
+				else {
+					resultados << ",";
+				}
+			}
+			resultados << endl;
+		}
+
+		resultados << "\n\nI_minus =" << endl;
+		for (IloInt i = 0; i < N; i++) {
+			for (IloInt t = 0; t < T; t++) {
+				if (cplex.isExtracted(I_minus[i][t])) {
+					resultados << cplex.getValue(I_minus[i][t]) << ",";
+				}
+				else {
+					resultados << ",";
+				}
+			}
+			resultados << endl;
+		}
+
+
+		resultados.close();
+
 		
 	}
 	catch (IloException& e) {
@@ -443,12 +548,11 @@ list<list<variavel>> Modelo::RF_Mc2(int k, list<vector<variavel>> particoes_comp
 	return particoes;
 }
 
-void Modelo::RELAX_AND_FIX(int estrategia, string saida, int k, bool _fix_opt) {
+void Modelo::RELAX_AND_FIX(int estrategia, const char* saida, int k, bool _fix_opt) {
 	list<list<variavel>> particao;
 	IloInt i, l, s, t;
 	list<vector<variavel>> particoes_completas;
 
-	
 	vector<variavel> var_list;
 	for ( i = 0; i < N; i++) {
 		for (l = 0; l < M; l++) {
@@ -464,6 +568,25 @@ void Modelo::RELAX_AND_FIX(int estrategia, string saida, int k, bool _fix_opt) {
 		}
 	}
 	particoes_completas.push_back(var_list);
+
+	//calcular relaxação linear e distâncias da integralidade
+	{
+		criar_modelo();
+		cplex = IloCplex(modelo);
+
+		//resolver linear
+		cplex.setParam(IloCplex::Param::MIP::Display, 0);
+		cplex.solve();
+
+
+		for (auto &par: particoes_completas)
+		{
+			for (auto& var : par) {
+				var.dist = min(cplex.getValue(x[var.i][var.l][var.s]), 1.0 - cplex.getValue(x[var.i][var.l][var.s]));
+			}
+		}
+	}
+
 
 	switch (estrategia) {
 	case 1:
@@ -1689,9 +1812,10 @@ list<list<variavel>> Modelo::RF_S4(list<vector<variavel>> particoes_completas, i
 			}
 		}
 		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-
-		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-
+		//influcencia S10
+		//std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+		//distancia S9
+		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
 		std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i];});
 
 
