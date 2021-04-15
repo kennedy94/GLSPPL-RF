@@ -11,9 +11,22 @@ ILOSTLBEGIN
 
 using namespace std;
 
+struct variavel {
+	int i, l, s, t;
+	double influ, dist, valor_;
+	variavel(int i, int l, int s, int t) {
+		this->i = i;
+		this->l = l;
+		this->s = s;
+		this->t = t;
+		influ = 0.0;
+	}
+
+};
 
 class Problema{
-	protected:
+protected:
+	
 	int
 		N,	//Número de produtos
 		T,	//Número de períodos
@@ -22,6 +35,7 @@ class Problema{
 		CA, //Capacidade de Armazenagem
 		W_p; //subperiodos por período
 	vector<vector<bool>> l_produz_i;
+
 
 	vector<vector<int>>
 		SP,
@@ -50,6 +64,8 @@ class Problema{
 
 public:
 	Problema(const char* nome);
+
+	void heurística_const();
 
 	~Problema();
 };

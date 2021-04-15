@@ -157,10 +157,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Modelo.cpp" />
     <ClCompile Include="Problema.cpp" />
+    <ClCompile Include="RF_RUIM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Modelo.h" />
     <ClInclude Include="Problema.h" />
+    <ClInclude Include="RF_RUIM.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="teste.txt" />
@@ -217,6 +219,7 @@
     <Text Include="x64\Release\Testes\resultados_modelo.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="testes" />
     <None Include="x64\Release\Testes\abkm2020basicasreais.dat" />
     <None Include="x64\Release\Testes\abkm2020basicasreais.eps" />

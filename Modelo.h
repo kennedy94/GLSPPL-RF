@@ -4,20 +4,11 @@
 #include <algorithm>
 #include <list>
 #include <vector>
+#include <chrono>
+
+#define episilon 10e-8
 
 
-
-struct variavel{
-	int i, l, s, t, influ, dist;
-	variavel(int i, int l, int s, int t) {
-		this->i = i;
-		this->l = l;
-		this->s = s;
-		this->t = t;
-		influ = 0;
-	}
-
-};
 class Modelo :
 	public Problema
 {
@@ -45,13 +36,13 @@ private:
 	void restricoes();
 
 public:
-	Modelo(const char* filename) : Problema(filename) {	}
+	Modelo(const char* filename) : Problema(filename) {	};
 
 
 	void
 		resolver(),	//Modelo default
 		resolver_linear(),
-		RELAX_AND_FIX(int estrategia, const char* saida, int k = -1, bool _fix_opt = false); //Relax-and-fix por máquina com mais produtos criticos
+		RELAX_AND_FIX(int estrategia, const char* saida, int k = -1, double BUDGET = 3600.0); //Relax-and-fix por máquina com mais produtos criticos
 
 	list<list<variavel>>
 		RF_Pr1(int k, list<vector<variavel>> particoes_completas),	//Relax-and-fix por produto a partir de maior demanda
@@ -64,16 +55,6 @@ public:
 		RF_Tm2(int k, list<vector<variavel>> particoes_completas);	//Relax-and-fix por tempo a partir de T
 
 	
-	list<list<variavel>>
-		RF_Hb2(list<vector<variavel>> particoes_completas, int k1, int k2, int estrat1, int estrat2),
-		
-		RF_Hb1(list<vector<variavel>> particoes_completas, int k1, int k2, int k3, int estrat1, int estrat2, int estrat3);
-
-	void 
-		RF_Hb2_Drt(list<vector<variavel>> particoes_completas, int k1, int k2, int estrat1, int estrat2),
-		RF_Pr2_Drt(list<vector<variavel>> particoes_completas, int k),
-		FIX_AND_OPTIMIZE(vector<vector<vector<bool>>>  x_hat);
-
 	void RELAX_AND_FIX_Estrat1(int k);
 
 	list<list<variavel>> RF_S2(list<vector<variavel>> particoes_completas);
@@ -84,7 +65,7 @@ public:
 
 	list<list<variavel>> RF_S4(list<vector<variavel>> particoes_completas, int K);
 
-	list<list<variavel>> RF_S5(list<vector<variavel>> particoes_completas);
+	list<list<variavel>> RF_S5(list<vector<variavel>> particoes_completas, int K);
 
 	list<list<variavel>> RF_S6(list<vector<variavel>> particoes_completas);
 
@@ -93,6 +74,8 @@ public:
 	list<list<variavel>> RF_S8(list<vector<variavel>> particoes_completas);
 
 	list<list<variavel>> RF_S10(list<vector<variavel>> particoes_completas, int k);
+
+	void RF_K_HIBRIDO(int estrategia, const char* saida, int k, bool _fix_opt);
 
 
 	bool teste_de_viabilidade();

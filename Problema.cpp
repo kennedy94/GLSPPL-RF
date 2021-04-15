@@ -255,6 +255,29 @@ Problema::Problema(const char* nome){
 	saida.close();
 }
 
+void Problema::heurística_const(){
+
+	vector<vector<double>>
+		demanda_acum(N);
+	vector<vector<vector<double>>>
+		q_acum(N);
+
+	for (int i = 0; i < N; i++){
+		demanda_acum[i] = vector<double>(N, 0.0);
+		q_acum[i] = vector<vector<double>>(M);
+
+		for (int l = 0; l < M; l++){
+			if (l_produz_i[l][i]) {
+				q_acum[i][l] = vector<double>(W);
+			}
+		}
+	}
+
+
+
+
+}
+
 
 Problema::~Problema()
 {
