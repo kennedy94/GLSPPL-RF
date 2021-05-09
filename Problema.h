@@ -65,7 +65,6 @@ protected:
 public:
 	Problema(const char* nome);
 
-	void heurística_const();
 
 	~Problema();
 };

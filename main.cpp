@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
 	const char* instancia = argv[1];
 	const char* saida = argv[2];
 	int estrategia = -1,
-		k = -1;
+		k = -1,
+		divisao_tempo = -1;
 	double BUDGET = 3600.0;
 
 	if (argc > 3)
@@ -23,20 +24,14 @@ int main(int argc, char* argv[]) {
 	if (argc > 5) {
 		BUDGET = atoi(argv[5]);
 	}
+	if (argc > 6) {
+		divisao_tempo = atoi(argv[6]);
+	}
 
-	//Modelo Teste("IO_PrA1.txt");
-	Modelo Teste(instancia);
-
-	//Teste.resolver();
-	//Teste.resolver_linear();
+	RF_RUIM Teste(instancia);
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
-
-	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET);
-	
-	
-	//Teste.RF_K_HIBRIDO(estrategia, saida, k, fix_opt);
-	
-	//Teste.RELAX_AND_FIX_Estrat1(k);
+	cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;
+	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo);
 	return 0;
 }

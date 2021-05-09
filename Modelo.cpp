@@ -44,8 +44,8 @@ void Modelo::resolver() {
 
 		cplex = IloCplex(modelo);
 
-		//cplex.setParam(IloCplex::Param::MIP::Display, 0);
-		cplex.setParam(IloCplex::TiLim, 10);
+		cplex.setParam(IloCplex::Param::MIP::Display, 0);
+		cplex.setParam(IloCplex::TiLim, 3600);
 		//cplex.setParam(IloCplex::Param::Preprocessing::RepeatPresolve, 0);
 
 		IloNum soltime;
@@ -611,7 +611,7 @@ void Modelo::RELAX_AND_FIX(int estrategia, const char* saida, int k, double BUDG
 			cplex.setParam(IloCplex::TiLim, (double)BUDGET/k);
 			cplex.setParam(IloCplex::Threads, 1);
 			cplex.setParam(IloCplex::Param::MIP::Display, 0);
-			cplex.setParam(IloCplex::Param::Preprocessing::Presolve, false);
+			//cplex.setParam(IloCplex::Param::Preprocessing::Presolve, false);
 			cplex.solve();
 
 			auto end = std::chrono::steady_clock::now();
@@ -639,6 +639,7 @@ void Modelo::RELAX_AND_FIX(int estrategia, const char* saida, int k, double BUDG
 			}
 
 			modelo.add(restricoes);
+			restricoes.end();
 		}
 		cout << "Numero de variaveis inteiras = " << contador_variaveis_trans << "!!!!!!!!!!\n\n\n";
 

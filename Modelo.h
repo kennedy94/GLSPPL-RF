@@ -57,11 +57,12 @@ public:
 	
 	void RELAX_AND_FIX_Estrat1(int k);
 
+
+	list<list<variavel>> RF_S1(list<vector<variavel>> particoes_completas);
+
 	list<list<variavel>> RF_S2(list<vector<variavel>> particoes_completas);
 
 	list<list<variavel>> RF_S3(list<vector<variavel>> particoes_completas);
-
-	list<list<variavel>> RF_S1(list<vector<variavel>> particoes_completas);
 
 	list<list<variavel>> RF_S4(list<vector<variavel>> particoes_completas, int K);
 

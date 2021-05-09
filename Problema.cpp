@@ -232,13 +232,10 @@ Problema::Problema(const char* nome){
 		for (auto i : SP[l]) {
 			for (auto j : SP[l]) {
 				arquivo >> cs[i][j][l];
-				cout << cs[i][j][l] << " ";
 			}
-			cout << endl;
-		}		
-		cout << endl;
+		}
 	}
-
+	
 	
 	arquivo.close();
 
@@ -246,35 +243,6 @@ Problema::Problema(const char* nome){
 	for (int l = 0; l < M; l++){
 		n_prod_maq += SP[l].size();
 	}
-
-	ofstream saida("var_const.csv");
-
-	saida << instancia << "," << n_prod_maq * W << ","
-		<< N * T + T + M * T + 2 * (n_prod_maq * W) + M * W + 2 * (n_prod_maq * 2 * W);
-
-	saida.close();
-}
-
-void Problema::heurística_const(){
-
-	vector<vector<double>>
-		demanda_acum(N);
-	vector<vector<vector<double>>>
-		q_acum(N);
-
-	for (int i = 0; i < N; i++){
-		demanda_acum[i] = vector<double>(N, 0.0);
-		q_acum[i] = vector<vector<double>>(M);
-
-		for (int l = 0; l < M; l++){
-			if (l_produz_i[l][i]) {
-				q_acum[i][l] = vector<double>(W);
-			}
-		}
-	}
-
-
-
 
 }
 
