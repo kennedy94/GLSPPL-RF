@@ -1,6 +1,6 @@
-#include "RF_RUIM.h"
+#include "RF.h"
 
-vector<vector<variavel>> RF_RUIM::RF_S4(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S4(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 
 	IloInt i, l, s, t;
@@ -43,7 +43,7 @@ vector<vector<variavel>> RF_RUIM::RF_S4(vector<variavel> particoes_completas, in
 
 
 
-void RF_RUIM::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, int modo_divisao)
+void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, int modo_divisao)
 {
 
 	IloInt i, j, l, t, s;
@@ -51,13 +51,14 @@ void RF_RUIM::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUD
 
 	vector<vector<variavel>> particao;
 
-
+	int ind_geral = 0;
 	for (i = 0; i < N; i++) {
 		for (l = 0; l < M; l++) {
 			if (l_produz_i[l][i]) {
 				t = 1;
 				for (s = 1; s < W; s++) {
-					particoes_completas.push_back(variavel(i, l, s, t));
+					particoes_completas.push_back(variavel(i, l, s, t, ind_geral));
+					ind_geral++;
 					if (s % W_p == 0)
 						t++;
 
@@ -286,11 +287,13 @@ void RF_RUIM::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUD
 			cplex.setParam(IloCplex::Param::MIP::Display, 0);
 			cplex.solve();
 
-			env.end();
+			
 
 			for (auto& var : particoes_completas) {
 				var.dist = min(cplex.getValue(x[var.i][var.l][var.s]), 1.0 - cplex.getValue(x[var.i][var.l][var.s]));
 			}
+			cout << endl;
+			env.end();
 
 		}
 		catch (IloException& e) {
@@ -320,15 +323,51 @@ void RF_RUIM::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUD
 	}
 
 	switch (estrategia) {
-
+	case 1:
+		particao = RF_S1(particoes_completas, K);
+		break;
+	case 2:
+		particao = RF_S2(particoes_completas, K);
+		break;
+	case 3:
+		particao = RF_S3(particoes_completas, K);
+		break;
 	case 4:
 		particao = RF_S4(particoes_completas, K);
 		break;
-
+	case 5:
+		particao = RF_S5(particoes_completas, K);
+		break;
+	case 6:
+		particao = RF_S6(particoes_completas, K);
+		break;
+	case 7:
+		particao = RF_S7(particoes_completas, K);
+		break;
 	case 8:
 		particao = RF_S8(particoes_completas, K);
 		break;
-
+	case 9:
+		particao = RF_S9(particoes_completas, K);
+		break;
+	case 10:
+		particao = RF_S10(particoes_completas, K);
+		break;
+	case 11:
+		particao = HRF1_S1_S5(particoes_completas, K);
+		break;
+	case 12:
+		particao = HRF1_S1_S8(particoes_completas, K);
+		break;
+	case 13:
+		particao = HRF2_S1_S5(particoes_completas, K);
+		break;
+	case 14:
+		particao = HRF2_S1_S8(particoes_completas, K);
+		break;
+	case 15:
+		particao = RF_S8_errada(particoes_completas, K);
+		break;
 	default:
 		cerr << "Erro: Nenhuma estrategia escolhdida!" << endl;
 		exit(0);
@@ -691,7 +730,7 @@ void RF_RUIM::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUD
 	
 }
 
-bool RF_RUIM::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus, IloArray<IloFloatVarArray> I_minus, IloArray<IloArray<IloFloatVarArray>> q,
+bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus, IloArray<IloFloatVarArray> I_minus, IloArray<IloArray<IloFloatVarArray>> q,
 	IloArray<IloArray<IloArray<IloNumVar>>> x, IloArray<IloArray<IloArray<IloFloatVarArray>>> y)
 {
 	IloInt i, j, l, s, t;
@@ -829,7 +868,7 @@ bool RF_RUIM::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_
 }
 
 
-vector<vector<variavel>> RF_RUIM::RF_S1(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S1(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
 
@@ -859,7 +898,7 @@ vector<vector<variavel>> RF_RUIM::RF_S1(vector<variavel> particoes_completas, in
 	return particoes;
 }
 
-vector<vector<variavel>> RF_RUIM::RF_S2(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S2(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	IloInt i, l, j, s, t;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
@@ -896,7 +935,7 @@ vector<vector<variavel>> RF_RUIM::RF_S2(vector<variavel> particoes_completas, in
 }
 
 
-vector<vector<variavel>> RF_RUIM::RF_S3(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S3(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	IloInt i, l, j, s, t;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
@@ -932,7 +971,7 @@ vector<vector<variavel>> RF_RUIM::RF_S3(vector<variavel> particoes_completas, in
 	return particoes;
 }
 
-vector<vector<variavel>> RF_RUIM::RF_S5(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S5(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	IloInt i, l, j, s, t;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
@@ -955,7 +994,6 @@ vector<vector<variavel>> RF_RUIM::RF_S5(vector<variavel> particoes_completas, in
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
 	//distancia S9
 	//std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
-
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
 
 	vector<variavel> var_list;
@@ -975,52 +1013,7 @@ vector<vector<variavel>> RF_RUIM::RF_S5(vector<variavel> particoes_completas, in
 	return particoes;
 }
 
-
-
-vector<vector<variavel>> RF_RUIM::RF_S5(vector<variavel> particoes_completas, int K) {
-	vector<vector<variavel>> particoes;
-	IloInt i, l, j, s, t;
-	int n_var_part = ceil((double)particoes_completas.size() / K);
-
-
-	vector<int> flexibilidade(N, 0);
-
-	for (i = 0; i < N; i++) {
-		for (l = 0; l < M; l++)
-		{
-			if (l_produz_i[l][i])
-			{
-				flexibilidade[i]++;
-			}
-
-		}
-	}
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influcencia S10
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//distancia S9
-	//std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
-
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
-
-	vector<variavel> var_list;
-
-	int cont = 0;
-
-	for (auto& var : particoes_completas) {
-		cont++;
-		var_list.push_back(var);
-
-		if (cont % n_var_part == 0 || cont == particoes_completas.size()) { //tá adaptado para K = N, senão tem q mudar
-			particoes.push_back(var_list);
-			var_list.clear();
-		}
-	}
-
-	return particoes;
-}
-
-vector<vector<variavel>> RF_RUIM::RF_S6(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S6(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	IloInt i, l, j, s, t;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
@@ -1061,7 +1054,7 @@ vector<vector<variavel>> RF_RUIM::RF_S6(vector<variavel> particoes_completas, in
 }
 
 
-vector<vector<variavel>> RF_RUIM::RF_S7(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S7(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	IloInt i, l, j, s, t;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
@@ -1101,7 +1094,7 @@ vector<vector<variavel>> RF_RUIM::RF_S7(vector<variavel> particoes_completas, in
 	return particoes;
 }
 
-vector<vector<variavel>> RF_RUIM::RF_S8(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S8_errada(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
 
@@ -1115,6 +1108,62 @@ vector<vector<variavel>> RF_RUIM::RF_S8(vector<variavel> particoes_completas, in
 		for (i = 0; i < N; i++) {
 			if (l_produz_i[l][i] && SP[i].size() < min) {
 				min = SP[i].size();
+			}
+		}
+		criticidade[l] = M - min;
+	}
+
+	for ( l = 0; l < N; l++)
+	{
+		cout << criticidade[l] << endl;
+	}
+	getchar();
+	exit(0);
+
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influcencia S10
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//distancia S9
+	//std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
+
+
+	vector<variavel> var_list;
+
+	int cont = 0;
+
+	for (auto& var : particoes_completas) {
+		cont++;
+		var_list.push_back(var);
+
+		if (cont % n_var_part == 0 || cont == particoes_completas.size()) { //tá adaptado para K = N, senão tem q mudar
+			particoes.push_back(var_list);
+			var_list.clear();
+		}
+	}
+
+	return particoes;
+}
+
+vector<vector<variavel>> RF::RF_S8(vector<variavel> particoes_completas, int K) {
+	vector<vector<variavel>> particoes;
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+	IloInt i, l, s, t;
+
+	vector<int> f_i(N, 0);
+	for (l = 0; l < M; l++) {
+		for (auto sp : SP[l]) {
+			f_i[sp]++;
+		}
+	}
+
+	vector<int> criticidade(M, 0);
+	for (l = 0; l < M; l++) {
+		int min = INT_MAX;
+		for (i = 0; i < N; i++) {
+			if (l_produz_i[l][i] && f_i[i] < min) {
+				min = f_i[i];
 			}
 		}
 		criticidade[l] = M - min;
@@ -1145,7 +1194,9 @@ vector<vector<variavel>> RF_RUIM::RF_S8(vector<variavel> particoes_completas, in
 	return particoes;
 }
 
-vector<vector<variavel>> RF_RUIM::RF_S9(vector<variavel> particoes_completas, int K) {
+
+
+vector<vector<variavel>> RF::RF_S9(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
 
@@ -1172,7 +1223,7 @@ vector<vector<variavel>> RF_RUIM::RF_S9(vector<variavel> particoes_completas, in
 }
 
 
-vector<vector<variavel>> RF_RUIM::RF_S10(vector<variavel> particoes_completas, int K) {
+vector<vector<variavel>> RF::RF_S10(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
 
@@ -1199,3 +1250,319 @@ vector<vector<variavel>> RF_RUIM::RF_S10(vector<variavel> particoes_completas, i
 
 	return particoes;
 }
+
+vector<vector<variavel>> RF::HRF1_S1_S5(vector<variavel> particoes_completas, int K){
+
+	vector<vector<variavel>> particoes;
+	IloInt i, l, j, s, t;
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+
+	vector<int> flexibilidade(N, 0);
+	for (i = 0; i < N; i++) {
+		for (l = 0; l < M; l++){
+			if (l_produz_i[l][i]){
+				flexibilidade[i]++;
+			}
+
+		}
+	}
+	vector<variavel>
+		particoes_est1 = particoes_completas,
+		particoes_est2 = particoes_completas;
+	vector<bool> adicionado(particoes_completas.size(), false);
+
+
+
+	//indice
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S1
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S5
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
+
+
+	vector<variavel> var_list;
+	int
+		cont1 = 0,
+		cont2 = 0;
+
+	particoes = vector<vector<variavel>>(K);
+
+	for (int k = 0; k < K; k++){
+		//se par recebe S1
+		if ((k % 2) == 0) {
+			int it_var = 0;
+			while (it_var < n_var_part && cont1 < particoes_completas.size()) {
+				if (!adicionado[particoes_est1[cont1].ind_geral]){
+					particoes[k].push_back(particoes_est1[cont1]);
+					it_var++;
+					adicionado[particoes_est1[cont1].ind_geral] = true;
+				}
+				cont1++;
+			}
+		}
+		else//se impar recebe S5
+		{
+			int it_var = 0;
+			while (it_var < n_var_part && cont2 < particoes_completas.size()) {
+				if (!adicionado[particoes_est2[cont2].ind_geral]) {
+					particoes[k].push_back(particoes_est2[cont2]);
+					it_var++;
+					adicionado[particoes_est2[cont2].ind_geral] = true;
+				}
+				cont2++;
+			}
+		}
+
+	}
+
+	return particoes;
+}
+
+
+
+vector<vector<variavel>> RF::HRF1_S1_S8(vector<variavel> particoes_completas, int K) {
+
+	vector<vector<variavel>> particoes;
+	IloInt i, l, j, s, t;
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+
+	vector<int> f_i(N, 0);
+	for (l = 0; l < M; l++) {
+		for (auto sp : SP[l]) {
+			f_i[sp]++;
+		}
+	}
+
+	vector<int> criticidade(M, 0);
+	for (l = 0; l < M; l++) {
+		int min = INT_MAX;
+		for (i = 0; i < N; i++) {
+			if (l_produz_i[l][i] && f_i[i] < min) {
+				min = f_i[i];
+			}
+		}
+		criticidade[l] = M - min;
+	}
+
+	vector<variavel>
+		particoes_est1 = particoes_completas,
+		particoes_est2 = particoes_completas;
+	vector<bool> adicionado(particoes_completas.size(), false);
+
+
+
+	//indice
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S1
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S8
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
+
+
+	vector<variavel> var_list;
+	int
+		cont1 = 0,
+		cont2 = 0;
+
+	particoes = vector<vector<variavel>>(K);
+
+	for (int k = 0; k < K; k++) {
+		//se par recebe S1
+		if ((k % 2) == 0) {
+			int it_var = 0;
+			while (it_var < n_var_part && cont1 < particoes_completas.size()) {
+				if (!adicionado[particoes_est1[cont1].ind_geral]) {
+					particoes[k].push_back(particoes_est1[cont1]);
+					it_var++;
+					adicionado[particoes_est1[cont1].ind_geral] = true;
+				}
+				cont1++;
+			}
+		}
+		else//se impar recebe S8
+		{
+			int it_var = 0;
+			while (it_var < n_var_part && cont2 < particoes_completas.size()) {
+				if (!adicionado[particoes_est2[cont2].ind_geral]) {
+					particoes[k].push_back(particoes_est2[cont2]);
+					it_var++;
+					adicionado[particoes_est2[cont2].ind_geral] = true;
+				}
+				cont2++;
+			}
+		}
+
+	}
+
+	return particoes;
+}
+
+vector<vector<variavel>> RF::HRF2_S1_S5(vector<variavel> particoes_completas, int K)
+{
+	vector<vector<variavel>> particoes;
+	IloInt i, l, j, s, t;
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+
+	vector<int> flexibilidade(N, 0);
+	for (i = 0; i < N; i++) {
+		for (l = 0; l < M; l++) {
+			if (l_produz_i[l][i]) {
+				flexibilidade[i]++;
+			}
+
+		}
+	}
+	vector<variavel>
+		particoes_est1 = particoes_completas,
+		particoes_est2 = particoes_completas;
+	vector<bool> adicionado(particoes_completas.size(), false);
+
+
+
+	//indice
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S1
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S5
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
+
+
+	vector<variavel> var_list;
+	int
+		cont1 = 0,
+		cont2 = 0;
+
+	particoes = vector<vector<variavel>>(K);
+	int it_var;
+	for (int k = 0; k < K; k++) {
+		//S1
+		it_var = 0;
+		while (it_var < ceil(n_var_part * 0.5) && cont1 < particoes_completas.size()) {
+			if (!adicionado[particoes_est1[cont1].ind_geral]) {
+				particoes[k].push_back(particoes_est1[cont1]);
+				it_var++;
+				adicionado[particoes_est1[cont1].ind_geral] = true;
+			}
+			cont1++;
+		}
+		
+		//S5
+		it_var = 0;
+		while (it_var < floor(n_var_part * 0.5) && cont2 < particoes_completas.size()) {
+			if (!adicionado[particoes_est2[cont2].ind_geral]) {
+				particoes[k].push_back(particoes_est2[cont2]);
+				it_var++;
+				adicionado[particoes_est2[cont2].ind_geral] = true;
+			}
+			cont2++;
+		}
+
+	}
+
+	return particoes;
+}
+
+
+
+vector<vector<variavel>> RF::HRF2_S1_S8(vector<variavel> particoes_completas, int K)
+{
+	vector<vector<variavel>> particoes;
+	IloInt i, l, j, s, t;
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+	vector<int> f_i(N, 0);
+	for (l = 0; l < M; l++) {
+		for (auto sp : SP[l]) {
+			f_i[sp]++;
+		}
+	}
+
+	vector<int> criticidade(M, 0);
+	for (l = 0; l < M; l++) {
+		int min = INT_MAX;
+		for (i = 0; i < N; i++) {
+			if (l_produz_i[l][i] && f_i[i] < min) {
+				min = f_i[i];
+			}
+		}
+		criticidade[l] = M - min;
+	}
+
+	vector<variavel>
+		particoes_est1 = particoes_completas,
+		particoes_est2 = particoes_completas;
+	vector<bool> adicionado(particoes_completas.size(), false);
+
+
+
+	//indice
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S1
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	//influencia S10
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+	//S8
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
+
+
+	vector<variavel> var_list;
+	int
+		cont1 = 0,
+		cont2 = 0;
+
+	particoes = vector<vector<variavel>>(K);
+	int it_var;
+	for (int k = 0; k < K; k++) {
+		//S1
+		it_var = 0;
+		while (it_var < ceil(n_var_part * 0.5) && cont1 < particoes_completas.size()) {
+			if (!adicionado[particoes_est1[cont1].ind_geral]) {
+				particoes[k].push_back(particoes_est1[cont1]);
+				it_var++;
+				adicionado[particoes_est1[cont1].ind_geral] = true;
+			}
+			cont1++;
+		}
+
+		//S5
+		it_var = 0;
+		while (it_var < floor(n_var_part * 0.5) && cont2 < particoes_completas.size()) {
+			if (!adicionado[particoes_est2[cont2].ind_geral]) {
+				particoes[k].push_back(particoes_est2[cont2]);
+				it_var++;
+				adicionado[particoes_est2[cont2].ind_geral] = true;
+			}
+			cont2++;
+		}
+
+	}
+
+	return particoes;
+}
+

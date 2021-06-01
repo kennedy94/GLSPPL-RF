@@ -155,14 +155,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Modelo.cpp" />
     <ClCompile Include="Problema.cpp" />
-    <ClCompile Include="RF_RUIM.cpp" />
+    <ClCompile Include="RF.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Modelo.h" />
     <ClInclude Include="Problema.h" />
-    <ClInclude Include="RF_RUIM.h" />
+    <ClInclude Include="RF.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="teste.txt" />

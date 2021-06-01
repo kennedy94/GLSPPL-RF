@@ -18,13 +18,10 @@
     <ClCompile Include="Problema.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Modelo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RF_RUIM.cpp">
+    <ClCompile Include="RF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,10 +29,7 @@
     <ClInclude Include="Problema.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Modelo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RF_RUIM.h">
+    <ClInclude Include="RF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

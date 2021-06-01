@@ -1,6 +1,5 @@
 #include "Problema.h"
-#include "Modelo.h"
-#include "RF_RUIM.h"
+#include "RF.h"
 
 int main(int argc, char* argv[]) {
 
@@ -28,7 +27,7 @@ int main(int argc, char* argv[]) {
 		divisao_tempo = atoi(argv[6]);
 	}
 
-	RF_RUIM Teste(instancia);
+	RF Teste(instancia);
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
 	cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;

@@ -12,13 +12,22 @@ ILOSTLBEGIN
 using namespace std;
 
 struct variavel {
-	int i, l, s, t;
+	int i, l, s, t, ind_geral;
 	double influ, dist, valor_;
 	variavel(int i, int l, int s, int t) {
 		this->i = i;
 		this->l = l;
 		this->s = s;
 		this->t = t;
+		influ = 0.0;
+		ind_geral = -1;
+	}
+	variavel(int i, int l, int s, int t, int ind_geral) {
+		this->i = i;
+		this->l = l;
+		this->s = s;
+		this->t = t;
+		this->ind_geral = ind_geral;
 		influ = 0.0;
 	}
 
