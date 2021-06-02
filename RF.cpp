@@ -1276,15 +1276,15 @@ vector<vector<variavel>> RF::HRF1_S1_S5(vector<variavel> particoes_completas, in
 
 	//indice
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//S1
+	//S1 desempatada com S5
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 
+
+
 	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//S5
+	//S5 desempatada com S1
+	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
 
 
@@ -1296,29 +1296,31 @@ vector<vector<variavel>> RF::HRF1_S1_S5(vector<variavel> particoes_completas, in
 	particoes = vector<vector<variavel>>(K);
 
 	for (int k = 0; k < K; k++){
-		//se par recebe S1
-		if ((k % 2) == 0) {
-			int it_var = 0;
-			while (it_var < n_var_part && cont1 < particoes_completas.size()) {
-				if (!adicionado[particoes_est1[cont1].ind_geral]){
+		int it_var = 0;
+		while (it_var < n_var_part) {
+			bool add = false;
+			if ((it_var % 2) == 0 && cont1 < particoes_completas.size()){
+				if (!adicionado[particoes_est1[cont1].ind_geral]) {
 					particoes[k].push_back(particoes_est1[cont1]);
-					it_var++;
 					adicionado[particoes_est1[cont1].ind_geral] = true;
+					add = true;
 				}
 				cont1++;
 			}
-		}
-		else//se impar recebe S5
-		{
-			int it_var = 0;
-			while (it_var < n_var_part && cont2 < particoes_completas.size()) {
-				if (!adicionado[particoes_est2[cont2].ind_geral]) {
-					particoes[k].push_back(particoes_est2[cont2]);
-					it_var++;
-					adicionado[particoes_est2[cont2].ind_geral] = true;
+			else {
+				if (cont2 < particoes_completas.size()) {
+					if (!adicionado[particoes_est2[cont2].ind_geral]) {
+						particoes[k].push_back(particoes_est2[cont2]);
+						adicionado[particoes_est2[cont2].ind_geral] = true;
+						add = true;
+					}
+					cont2++;
 				}
-				cont2++;
 			}
+			if (cont1 == particoes_completas.size() && cont2 == particoes_completas.size())
+				break;
+			if(add)
+				it_var++;
 		}
 
 	}
