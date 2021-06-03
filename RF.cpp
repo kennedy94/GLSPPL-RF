@@ -1267,6 +1267,8 @@ vector<vector<variavel>> RF::HRF1_S1_S5(vector<variavel> particoes_completas, in
 
 		}
 	}
+
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
 	vector<variavel>
 		particoes_est1 = particoes_completas,
 		particoes_est2 = particoes_completas;
@@ -1274,17 +1276,13 @@ vector<vector<variavel>> RF::HRF1_S1_S5(vector<variavel> particoes_completas, in
 
 
 
-	//indice
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
 	//S1 desempatada com S5
 	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 
-
-
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+	
 	//S5 desempatada com S1
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
 
 
@@ -1355,6 +1353,9 @@ vector<vector<variavel>> RF::HRF1_S1_S8(vector<variavel> particoes_completas, in
 		criticidade[l] = M - min;
 	}
 
+
+
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
 	vector<variavel>
 		particoes_est1 = particoes_completas,
 		particoes_est2 = particoes_completas;
@@ -1362,17 +1363,13 @@ vector<vector<variavel>> RF::HRF1_S1_S8(vector<variavel> particoes_completas, in
 
 
 
-	//indice
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//S1
+	//S1 desempatada com S5
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//S8
+
+	//S5 desempatada com S1
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
 
 
@@ -1384,33 +1381,34 @@ vector<vector<variavel>> RF::HRF1_S1_S8(vector<variavel> particoes_completas, in
 	particoes = vector<vector<variavel>>(K);
 
 	for (int k = 0; k < K; k++) {
-		//se par recebe S1
-		if ((k % 2) == 0) {
-			int it_var = 0;
-			while (it_var < n_var_part && cont1 < particoes_completas.size()) {
+		int it_var = 0;
+		while (it_var < n_var_part) {
+			bool add = false;
+			if ((it_var % 2) == 0 && cont1 < particoes_completas.size()) {
 				if (!adicionado[particoes_est1[cont1].ind_geral]) {
 					particoes[k].push_back(particoes_est1[cont1]);
-					it_var++;
 					adicionado[particoes_est1[cont1].ind_geral] = true;
+					add = true;
 				}
 				cont1++;
 			}
-		}
-		else//se impar recebe S8
-		{
-			int it_var = 0;
-			while (it_var < n_var_part && cont2 < particoes_completas.size()) {
-				if (!adicionado[particoes_est2[cont2].ind_geral]) {
-					particoes[k].push_back(particoes_est2[cont2]);
-					it_var++;
-					adicionado[particoes_est2[cont2].ind_geral] = true;
+			else {
+				if (cont2 < particoes_completas.size()) {
+					if (!adicionado[particoes_est2[cont2].ind_geral]) {
+						particoes[k].push_back(particoes_est2[cont2]);
+						adicionado[particoes_est2[cont2].ind_geral] = true;
+						add = true;
+					}
+					cont2++;
 				}
-				cont2++;
 			}
+			if (cont1 == particoes_completas.size() && cont2 == particoes_completas.size())
+				break;
+			if (add)
+				it_var++;
 		}
 
 	}
-
 	return particoes;
 }
 
@@ -1430,57 +1428,45 @@ vector<vector<variavel>> RF::HRF2_S1_S5(vector<variavel> particoes_completas, in
 
 		}
 	}
+
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
 	vector<variavel>
-		particoes_est1 = particoes_completas,
-		particoes_est2 = particoes_completas;
+		particoes_est1 = particoes_completas;
 	vector<bool> adicionado(particoes_completas.size(), false);
 
 
-
-	//indice
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
 	//S1
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//S5
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
-
-
 	vector<variavel> var_list;
-	int
-		cont1 = 0,
-		cont2 = 0;
 
 	particoes = vector<vector<variavel>>(K);
-	int it_var;
+	int soma = 0;
 	for (int k = 0; k < K; k++) {
-		//S1
-		it_var = 0;
-		while (it_var < ceil(n_var_part * 0.5) && cont1 < particoes_completas.size()) {
+		int it_var = 0,
+			cont1 = 0;
+		vector<variavel> particoes_aux;
+		while (it_var < 2*n_var_part && cont1 < particoes_completas.size()) {
+			bool add = false;
 			if (!adicionado[particoes_est1[cont1].ind_geral]) {
-				particoes[k].push_back(particoes_est1[cont1]);
-				it_var++;
-				adicionado[particoes_est1[cont1].ind_geral] = true;
+				particoes_aux.push_back(particoes_est1[cont1]);
+				add = true;
 			}
 			cont1++;
-		}
-		
-		//S5
-		it_var = 0;
-		while (it_var < floor(n_var_part * 0.5) && cont2 < particoes_completas.size()) {
-			if (!adicionado[particoes_est2[cont2].ind_geral]) {
-				particoes[k].push_back(particoes_est2[cont2]);
+			if (add)
 				it_var++;
-				adicionado[particoes_est2[cont2].ind_geral] = true;
-			}
-			cont2++;
 		}
-
+		//S5
+		std::stable_sort(particoes_aux.begin(), particoes_aux.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
+		it_var = 0;
+		while (it_var < n_var_part && it_var < particoes_aux.size()) {
+			particoes[k].push_back(particoes_aux[it_var]);
+			it_var++;
+			adicionado[particoes[k].back().ind_geral] = true;
+			soma += adicionado[particoes[k].back().ind_geral];
+		}
+		particoes_aux.end();
+		
 	}
 
 	return particoes;
@@ -1512,56 +1498,43 @@ vector<vector<variavel>> RF::HRF2_S1_S8(vector<variavel> particoes_completas, in
 		criticidade[l] = M - min;
 	}
 
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
 	vector<variavel>
-		particoes_est1 = particoes_completas,
-		particoes_est2 = particoes_completas;
+		particoes_est1 = particoes_completas;
 	vector<bool> adicionado(particoes_completas.size(), false);
 
 
-
-	//indice
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
 	//S1
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//S8
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
-
-
 	vector<variavel> var_list;
-	int
-		cont1 = 0,
-		cont2 = 0;
 
 	particoes = vector<vector<variavel>>(K);
-	int it_var;
+	int soma = 0;
 	for (int k = 0; k < K; k++) {
-		//S1
-		it_var = 0;
-		while (it_var < ceil(n_var_part * 0.5) && cont1 < particoes_completas.size()) {
+		int it_var = 0,
+			cont1 = 0;
+		vector<variavel> particoes_aux;
+		while (it_var < 2 * n_var_part && cont1 < particoes_completas.size()) {
+			bool add = false;
 			if (!adicionado[particoes_est1[cont1].ind_geral]) {
-				particoes[k].push_back(particoes_est1[cont1]);
-				it_var++;
-				adicionado[particoes_est1[cont1].ind_geral] = true;
+				particoes_aux.push_back(particoes_est1[cont1]);
+				add = true;
 			}
 			cont1++;
-		}
-
-		//S5
-		it_var = 0;
-		while (it_var < floor(n_var_part * 0.5) && cont2 < particoes_completas.size()) {
-			if (!adicionado[particoes_est2[cont2].ind_geral]) {
-				particoes[k].push_back(particoes_est2[cont2]);
+			if (add)
 				it_var++;
-				adicionado[particoes_est2[cont2].ind_geral] = true;
-			}
-			cont2++;
 		}
+		//S8
+		std::stable_sort(particoes_aux.begin(), particoes_aux.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
+		it_var = 0;
+		while (it_var < n_var_part && it_var < particoes_aux.size()) {
+			particoes[k].push_back(particoes_aux[it_var]);
+			it_var++;
+			adicionado[particoes[k].back().ind_geral] = true;
+			soma += adicionado[particoes[k].back().ind_geral];
+		}
+		particoes_aux.end();
 
 	}
 
