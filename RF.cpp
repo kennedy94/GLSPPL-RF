@@ -1688,7 +1688,7 @@ vector<vector<variavel>> RF::HRF2_S5_S8(vector<variavel> particoes_completas, in
 
 	//S1
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.i] > criticidade[j.i];});
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
 
 
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.ind_geral < j.ind_geral;});
@@ -1756,7 +1756,7 @@ vector<vector<variavel>> RF::HRF2_S1_S8(vector<variavel> particoes_completas, in
 
 	//S1
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
-	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.i] > criticidade[j.i];});
+	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
 
 
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.ind_geral < j.ind_geral;});
@@ -1835,7 +1835,7 @@ vector<vector<variavel>> RF::HRF2_S1_S5_S8(vector<variavel> particoes_completas,
 
 	std::stable_sort(particoes_est1.begin(), particoes_est1.end(), [&](variavel i, variavel j) {return i.s < j.s;});
 	std::stable_sort(particoes_est2.begin(), particoes_est2.end(), [&](variavel i, variavel j) {return flexibilidade[i.i] > flexibilidade[j.i];});
-	std::stable_sort(particoes_est3.begin(), particoes_est3.end(), [&](variavel i, variavel j) {return criticidade[i.i] > criticidade[j.i];});
+	std::stable_sort(particoes_est3.begin(), particoes_est3.end(), [&](variavel i, variavel j) {return criticidade[i.l] > criticidade[j.l];});
 
 
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.ind_geral < j.ind_geral;});
