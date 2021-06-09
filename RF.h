@@ -50,6 +50,10 @@ public:
 
 	vector<vector<variavel>> HRF2_S1_S8(vector<variavel> particoes_completas, int K);
 
+	vector<vector<variavel>> HRF2_S5_S8(vector<variavel> particoes_completas, int K);
+
+	vector<vector<variavel>> HRF2_S1_S5_S8(vector<variavel> particoes_completas, int K);
+
 	vector<vector<variavel>> HRF3_S1_S8(vector<variavel> particoes_completas, int K);
 
 	void RELAX_AND_FIX(int estrategia, const char* saida, int k = -1, double BUDGET = 3600.0, int modo_divisao = -1); //Relax-and-fix por máquina com mais produtos criticos
