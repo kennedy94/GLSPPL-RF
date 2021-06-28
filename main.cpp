@@ -30,7 +30,8 @@ int main(int argc, char* argv[]) {
 	RF Teste(instancia);
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
-	cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;
+	//cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;
 	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo);
+	//Teste.imprimirdadosgerais();
 	return 0;
 }
