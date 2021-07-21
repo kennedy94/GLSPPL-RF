@@ -56,7 +56,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 		for (l = 0; l < M; l++) {
 			if (l_produz_i[l][i]) {
 				t = 1;
-				for (s = 0; s < W; s++) {
+				for (s = 1; s < W; s++) {
 					particoes_completas.push_back(variavel(i, l, s, t, ind_geral));
 					ind_geral++;
 					if (s % W_p == 0)
@@ -281,16 +281,16 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 				}
 			}
 
-			//(9)
+			//(fixação de variáveis
 			for (l = 0; l < M; l++) {
 				for (auto i : SP[l]) {
-					modelo.add(x[i][l][0] == 0).setName("(09)"); nconst++;
+					modelo.add(x[i][l][0] == 0).setName("(09)");
 				}
 			}
 
 			for (i = 0; i < N; i++) {
-				modelo.add(I_minus[i][0] == I0_minus[i]).setName("(10)"); nconst++;
-				modelo.add(I_plus[i][0] == I0_plus[i]).setName("(10)"); nconst++;
+				modelo.add(I_minus[i][0] == I0_minus[i]).setName("(10)");
+				modelo.add(I_plus[i][0] == I0_plus[i]).setName("(10)");
 			}
 
 
@@ -301,7 +301,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			cplex.solve();
 
 			
-
+			//calcular valores para S9
 			for (auto& var : particoes_completas) {
 				var.dist = min(cplex.getValue(x[var.i][var.l][var.s]), 1.0 - cplex.getValue(x[var.i][var.l][var.s]));
 			}
@@ -333,7 +333,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 		ofstream dados_variaves("dados_var.csv", fstream::app);
 		dados_variaves << instancia << "," << particoes_completas.size() << "," << nvar_reais << "," << nconst << endl;
 		dados_variaves.close();
-		//return;
+		return;
 
 
 
@@ -418,6 +418,9 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 	case 111:
 		particao = RF_S11(particoes_completas, K);
 		break;
+	case 112:
+		particao = RF_S112(particoes_completas, K);
+		break;
 	default:
 		cerr << "Erro: Nenhuma estrategia escolhdida!" << endl;
 		exit(0);
@@ -438,7 +441,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 	vector<double> tempos(K, 0.0);
 	double soma = 0.0;
 
-
+	//divisao dos budgets
 	switch (modo_divisao)
 	{
 	case 2:
@@ -482,6 +485,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 
 	for (int k = 0; k < K; k++)
 	{
+		//para cada k criar um subproblema
 
 		IloEnv env;
 		IloModel modelo;
@@ -504,7 +508,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 					if (l_produz_i[l][i]) {
 						x[i][l] = IloArray<IloNumVar>(env, W);
 
-						x[i][l][0] = IloNumVar(env, 0.0, 1.0, ILOFLOAT); //tenho q definar as zero q já são zero mesmo
+						x[i][l][0] = IloNumVar(env, 0.0, 1.0, ILOFLOAT); //tenho q definir as zero q já são zero mesmo
 
 						q[i][l] = IloFloatVarArray(env, W, 0.0, IloInfinity);
 					}
@@ -710,7 +714,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			//Resolver Modelo
 			cplex = IloCplex(modelo);
 			cplex.setParam(IloCplex::Threads, 1);
-			cplex.setParam(IloCplex::Param::MIP::Display, 0);
+			//cplex.setParam(IloCplex::Param::MIP::Display, 0);
 			//cplex.setParam(IloCplex::TiLim, (double)BUDGET / K);
 			
 
@@ -1122,7 +1126,6 @@ vector<vector<variavel>> RF::RF_S2(vector<variavel> particoes_completas, int K) 
 	return particoes;
 }
 
-
 vector<vector<variavel>> RF::RF_S3(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	IloInt i, l, j, s, t;
@@ -1386,9 +1389,14 @@ vector<vector<variavel>> RF::RF_S10(vector<variavel> particoes_completas, int K)
 	return particoes;
 }
 
-vector<vector<variavel>> RF::RF_S11(vector<variavel> particoes_completas, int K){
-	vector<double> afinidade(N, 0.0);
 
+//recebe um vector de variáveis e o número de partições K
+//S11 com S10
+vector<vector<variavel>> RF::RF_S112(vector<variavel> particoes_completas, int K){
+	//declara vector de afinidades de tamanho de itens N
+	vector<double> afinidade(N, 0.0);
+	
+	//calcula afinidade para cada item
 	for (int i = 0; i < N; i++)	{
 		double
 			min1 = INFINITY,
@@ -1400,20 +1408,98 @@ vector<vector<variavel>> RF::RF_S11(vector<variavel> particoes_completas, int K)
 			}
 		}
 		afinidade[i] = min2 - min1;
-
 	}
-
+	//inicia variável de particoes que sera retornada
 	vector<vector<variavel>> particoes;
+	//calcula o número máximo de variáveis por partição
 	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+	//ordena por item
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influencia S10
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//afinidade S11
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return afinidade[i.i] > afinidade[j.i];});
+
+	//reordena por afinidade mantendo a ordenação base de itens
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return afinidade[i.i] > afinidade[j.i];}); 
+	
+	//Vector que guarda o número de variáveis associada a cada produto.
+	vector<int> tamanhos(N, 1);
+	//iteradores
+	int
+		it = 0,
+		i = 0;
+	while (it < particoes_completas.size())	{
+		if (it + 1 == particoes_completas.size())
+			break;
+		if (particoes_completas[it].i == particoes_completas[it + 1].i)
+			tamanhos[i]++;
+		else
+			i++;
+		it++;
+	}	
+
+
+	//ordena cada subvector por tempo de processamento das máquinas
+	int acumulado = 0;
+	for (int i = 0; i < N; i++)
+	{
+		std::stable_sort(particoes_completas.begin()+acumulado, particoes_completas.begin()+acumulado+tamanhos[i], [&](variavel i, variavel j) {return  p[i.i][i.l] < p[j.i][j.l];});
+		acumulado += tamanhos[i];
+	}
+	
+	//montando partições seguindo as ordens pré-estabelecidas.
 	vector<variavel> var_list;
 
 	int cont = 0;
+	for (auto& var : particoes_completas) {
+		cont++;
+		var_list.push_back(var);
 
+		if (cont % n_var_part == 0 || cont == particoes_completas.size()) { //tá adaptado para K = N, senão tem q mudar
+			particoes.push_back(var_list);
+			var_list.clear();
+		}
+	}
+
+	return particoes;
+}
+
+vector<vector<variavel>> RF::RF_S11(vector<variavel> particoes_completas, int K) {
+	//declara vector de afinidades de tamanho de itens N
+	vector<double> afinidade(N, 0.0);
+
+	//calcula afinidade para cada item
+	for (int i = 0; i < N; i++) {
+		double
+			min1 = INFINITY,
+			min2 = INFINITY;
+		for (int l = 0; l < M; l++) {
+			if (l_produz_i[l][i] && p[i][l] <= min1) {
+				min2 = min1;
+				min1 = p[i][l];
+			}
+		}
+		afinidade[i] = min2 - min1;
+	}
+	//inicia variável de particoes que sera retornada
+	vector<vector<variavel>> particoes;
+	//calcula o número máximo de variáveis por partição
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+	//ordena por item
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
+
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
+
+	//reordena por afinidade mantendo a ordenação base de itens
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return afinidade[i.i] > afinidade[j.i];});
+
+
+	
+
+
+	//montando partições seguindo as ordens pré-estabelecidas.
+	vector<variavel> var_list;
+
+	int cont = 0;
 	for (auto& var : particoes_completas) {
 		cont++;
 		var_list.push_back(var);
@@ -1504,8 +1590,6 @@ vector<vector<variavel>> RF::HRF1_S1_S5(vector<variavel> particoes_completas, in
 
 	return particoes;
 }
-
-
 
 vector<vector<variavel>> RF::HRF1_S1_S8(vector<variavel> particoes_completas, int K) {
 

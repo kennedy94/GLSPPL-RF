@@ -36,6 +36,8 @@ public:
 
 	vector<vector<variavel>> RF_S10(vector<variavel> particoes_completas, int K);
 
+	vector<vector<variavel>> RF_S112(vector<variavel> particoes_completas, int K);
+
 	vector<vector<variavel>> RF_S11(vector<variavel> particoes_completas, int K);
 
 	vector<vector<variavel>> HRF1_S1_S5(vector<variavel> particoes_completas, int K);
