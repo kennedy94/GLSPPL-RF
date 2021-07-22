@@ -1,4 +1,4 @@
-#include "Problema.h"
+#include "Problem.h"
 
 Problem::Problem(const char* nome){
 
