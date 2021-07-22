@@ -1,6 +1,6 @@
 #include "Problema.h"
 
-Problema::Problema(const char* nome){
+Problem::Problem(const char* nome){
 
 	instancia = nome;
 	ifstream arquivo(nome);
@@ -247,6 +247,6 @@ Problema::Problema(const char* nome){
 }
 
 
-Problema::~Problema()
+Problem::~Problem()
 {
 }

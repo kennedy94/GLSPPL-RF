@@ -155,11 +155,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Problema.cpp" />
+    <ClCompile Include="Problem.cpp" />
     <ClCompile Include="RF.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Problema.h" />
+    <ClInclude Include="Problem.h" />
     <ClInclude Include="RF.h" />
   </ItemGroup>
   <ItemGroup>

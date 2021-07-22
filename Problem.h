@@ -35,7 +35,7 @@ struct variavel {
 
 };
 
-class Problema{
+class Problem{
 protected:
 	
 	int
@@ -74,9 +74,9 @@ protected:
 	const char* instancia;
 
 public:
-	Problema(const char* nome);
+	Problem(const char* nome);
 
 
-	~Problema();
+	~Problem();
 };
 

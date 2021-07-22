@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Problema.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Problem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Problema.h">
+    <ClInclude Include="RF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RF.h">
+    <ClInclude Include="Problem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

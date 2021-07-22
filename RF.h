@@ -1,5 +1,5 @@
 #pragma once
-#include "Problema.h"
+#include "Problem.h"
 #include <numeric>
 #include <algorithm>
 #include <list>
@@ -10,10 +10,10 @@
 
 
 class RF :
-	public Problema
+	public Problem
 {
 public:
-	RF(const char* filename) : Problema(filename) {	};
+	RF(const char* filename) : Problem(filename) {	};
 
 
 	vector<vector<variavel>> RF_S1(vector<variavel>  particoes_completas, int K);
