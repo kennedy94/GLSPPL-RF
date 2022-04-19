@@ -114,56 +114,90 @@ def gerador(m, n,
         f.write("%d\n" % Cw)
         for l in range(m):
             for i in range(card_IL[l]):
-                f.write("%d " % calI[l][i])
+                if i == card_IL[l] - 1:
+                    f.write("%d" % calI[l][i])
+                else:
+                    f.write("%d " % calI[l][i])
             f.write("\n")
             
         for l in range(m):
             for i in range(card_IL[l]):
-                f.write("%d " % q[l][i])
+                if i == card_IL[l] - 1:
+                    f.write("%d" % q[l][i])
+                else:
+                    f.write("%d " % q[l][i])
             f.write("\n")
         
         for l in range(m):
             for t in range(T):
-                f.write("%d " % CP[l][t])
+                if t == T - 1:
+                    f.write("%d" % CP[l][t])
+                else:
+                    f.write("%d " % CP[l][t])
             f.write("\n")
         
         for l in range(m):
             for i in range(card_IL[l]):
-                f.write("%.4f " % p[l][i])
+                if i == card_IL[l] - 1:
+                    f.write("%.4f" % p[l][i])
+                else:
+                    f.write("%.4f " % p[l][i])
             f.write("\n")
             
         for i in range(n):
-            f.write("%d " % Iplus[i])
+            if i == n - 1:
+                f.write("%d" % Iplus[i])
+            else:
+                f.write("%d " % Iplus[i])
         f.write("\n")
         
         for i in range(n):
-            f.write("%d " % Iminus[i])
-        f.write("\n\n")
+            if i == n - 1:
+                f.write("%d" % Iminus[i])
+            else:
+                f.write("%d " % Iminus[i])
+        f.write("\n")
         
         for i in range(n):
             for t in range(T):
-                f.write("%d " % d[i][t])
+                if t == T - 1:
+                    f.write("%d" % d[i][t])
+                else:
+                    f.write("%d " % d[i][t])
             f.write("\n")
         
         for l in range(m):
             for i in range(card_IL[l]):
                 for j in range(card_IL[l]):
-                    f.write("%d " % e[l][i][j])
+                    if j == card_IL[l] - 1:
+                        f.write("%d" % e[l][i][j])
+                    else:
+                        f.write("%d " % e[l][i][j])
                 f.write("\n")
-            f.write("\n")
+            if i != card_IL[l] - 1:
+                f.write("\n")
         
         for i in range(n):
-            f.write("%.4f " % h[i])
+            if i != n - 1:
+                f.write("%.4f " % h[i])
+            else:
+                f.write("%.4f" % h[i])
         f.write("\n")
         
         for i in range(n):
-            f.write("%.4f " % g[i])
+            if i != n - 1:
+                f.write("%.4f " % g[i])
+            else:
+                f.write("%.4f" % g[i])
         f.write("\n")
 
         
         for l in range(m):
             for i in range(card_IL[l]):
-                f.write("%.4f " % cp[l][i])
+                if i != card_IL[l] - 1:
+                    f.write("%.4f " % cp[l][i])
+                else:
+                    f.write("%.4f" % cp[l][i])
             f.write("\n")
             
 
@@ -171,9 +205,13 @@ def gerador(m, n,
         for l in range(m):
             for i in range(card_IL[l]):
                 for j in range(card_IL[l]):
-                    f.write("%d " % cs[l][i][j])
+                    if j != card_IL[l] - 1:
+                        f.write("%d " % cs[l][i][j])
+                    else:
+                        f.write("%d" % cs[l][i][j])
                 f.write("\n")
-            f.write("\n")
+            if i != card_IL[l] - 1:
+                f.write("\n")
 
 gerador(2,8,2,6,
         10000,14000,
