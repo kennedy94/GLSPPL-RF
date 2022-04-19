@@ -333,7 +333,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 		ofstream dados_variaves("dados_var.csv", fstream::app);
 		dados_variaves << instancia << "," << particoes_completas.size() << "," << nvar_reais << "," << nconst << endl;
 		dados_variaves.close();
-		return;
+		//return;
 
 
 
