@@ -1,44 +1,6 @@
 #include "RF.h"
 
-vector<vector<variavel>> RF::RF_S4(vector<variavel> particoes_completas, int K) {
-	vector<vector<variavel>> particoes;
 
-	IloInt i, l, s, t;
-
-	int n_var_part = ceil((double)particoes_completas.size() / K);
-
-	vector<int> demanda(N, 0);
-	for (i = 0; i < N; i++) {
-		for (t = 1; t < T; t++) {
-			demanda[i] += d[i][t];
-		}
-	}
-
-
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i;});
-	//influcencia S10
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ;});
-	//distancia S9
-	//std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
-	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i];});
-
-
-	vector<variavel> var_list;
-
-	int cont = 0;
-
-	for (auto& var : particoes_completas) {
-		cont++;
-		var_list.push_back(var);
-
-		if (cont % n_var_part == 0 || cont == particoes_completas.size()) { //tá adaptado para K = N, senão tem q mudar
-			particoes.push_back(var_list);
-			var_list.clear();
-		}
-	}
-
-	return particoes;
-}
 
 
 
@@ -1144,6 +1106,47 @@ vector<vector<variavel>> RF::RF_S3(vector<variavel> particoes_completas, int K) 
 	//std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
 
 	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return demanda[i.t] > demanda[j.t];});
+
+	vector<variavel> var_list;
+
+	int cont = 0;
+
+	for (auto& var : particoes_completas) {
+		cont++;
+		var_list.push_back(var);
+
+		if (cont % n_var_part == 0 || cont == particoes_completas.size()) { //tá adaptado para K = N, senão tem q mudar
+			particoes.push_back(var_list);
+			var_list.clear();
+		}
+	}
+
+	return particoes;
+}
+
+
+vector<vector<variavel>> RF::RF_S4(vector<variavel> particoes_completas, int K) {
+	vector<vector<variavel>> particoes;
+
+	IloInt i, l, s, t;
+
+	int n_var_part = ceil((double)particoes_completas.size() / K);
+
+	vector<int> demanda(N, 0);
+	for (i = 0; i < N; i++) {
+		for (t = 1; t < T; t++) {
+			demanda[i] += d[i][t];
+		}
+	}
+
+
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.i < j.i; });
+	//influcencia S10
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return i.influ > j.influ; });
+	//distancia S9
+	//std::stable_sort(part.begin(), part.end(), [&](variavel i, variavel j) {return i.dist > j.dist;});
+	std::stable_sort(particoes_completas.begin(), particoes_completas.end(), [&](variavel i, variavel j) {return demanda[i.i] < demanda[j.i]; });
+
 
 	vector<variavel> var_list;
 
