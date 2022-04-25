@@ -1,0 +1,19 @@
+set terminal epslatex size 12cm,6cm 
+set output "abkm2020fig6a.tex"
+
+set style fill solid 0.5 border -1
+set style boxplot nooutliers #outliers pointtype 7
+set style data boxplot
+set xzeroaxis dashtype "-" linewidth 6
+set boxwidth  0.5
+set pointsize 1
+set yrange [-1:0.1]
+unset key
+set datafile separator comma
+
+set ytics ('$0\%%$' 0, '$-20\%%$' -0.2, '$-40\%%$' -0.4, '$-60\%%$' -0.6, '$-80\%%$' -0.8, '$-100\%%$' -1, '$20\%%$' 0.2, '$40\%%$' 0.4,'$60\%%$' 0.6, '$80\%%$' 0.8,'$100\%%$' 1);
+set xtics ("600s" 0, "1200s" 1, "1800s" 2, "2400s" 3, "3000s" 4, "3600s" 5) scale 0.0
+#set yrange [-0.5:0.15]
+plot 'abkm2020fig6a.csv' using (0):1, '' using (1):2, '' using (2):3, '' using (3):4, '' using (4):5, '' using (5):6
+
+exit

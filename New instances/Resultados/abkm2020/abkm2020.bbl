@@ -1,0 +1,162 @@
+\begin{thebibliography}{}
+
+\bibitem[{ABIHPEC}, 2021]{abihpec}
+{ABIHPEC} (2021).
+\newblock {I}ndustry {O}verview of the {B}razilian {P}ersonal {C}are,
+  {P}erfumery and {C}osmetics {I}ndustry ({I}n {P}ortuguese. {A}vailable at
+  \url{https://abihpec.org.br/site2019/wp-content/uploads/2021/05/Panorama_do_Setor_Atualizado_Abril-Rev3.pdf}.
+  {A}ccessed on {J}uly 21, 2021.).
+
+\bibitem[Almeder and Almada-Lobo, 2011]{alme2011}
+Almeder, C. and Almada-Lobo, B. (2011).
+\newblock Synchronisation of scarce resources for a parallel machine lotsizing
+  problem.
+\newblock {\em International Journal of Production Research}, 49:7315--7335.
+
+\bibitem[Beraldi et~al., 2008]{beraldi2008rolling}
+Beraldi, P., Ghiani, G., Grieco, A., and Guerriero, E. (2008).
+\newblock Rolling-horizon and fix-and-relax heuristics for the parallel machine
+  lot-sizing and scheduling problem with sequence-dependent set-up costs.
+\newblock {\em Computers \& Operations Research}, 35:3644--3656.
+
+\bibitem[Clark and Clark, 2000]{clark2000rolling}
+Clark, A.~R. and Clark, S.~J. (2000).
+\newblock Rolling-horizon lot-sizing when set-up times are sequence-dependent.
+\newblock {\em International Journal of Production Research}, 38:2287--2307.
+
+\bibitem[Copil et~al., 2017]{copil}
+Copil, K., W\"orbelauer, M., Meyr, H., and Tempelmeier, H. (2017).
+\newblock Simultaneous lotsizing and scheduling problems: a classification and
+  review of models.
+\newblock {\em OR Spectrum}, 39:1--64.
+
+\bibitem[Dastidar and Nagi, 2005]{dastidar2005scheduling}
+Dastidar, S.~G. and Nagi, R. (2005).
+\newblock Scheduling injection molding operations with multiple resource
+  constraints and sequence dependent setup times and costs.
+\newblock {\em Computers \& Operations Research}, 32:2987--3005.
+
+\bibitem[de~Armas and Laguna, 2020]{dearmas2020}
+de~Armas, J. and Laguna, M. (2020).
+\newblock Parallel machine, capacitated lot-sizing and scheduling for the
+  pipe-insulation industry.
+\newblock {\em International Journal of Production Research}, 58:800--817.
+
+\bibitem[Drexl and Kimms, 1997]{drexl1997lot}
+Drexl, A. and Kimms, A. (1997).
+\newblock Lot sizing and scheduling—survey and extensions.
+\newblock {\em European Journal of Operational Research}, 99:221--235.
+
+\bibitem[Fleischmann and Meyr, 1997]{fleischmann1997general}
+Fleischmann, B. and Meyr, H. (1997).
+\newblock The general lotsizing and scheduling problem.
+\newblock {\em OR Spectrum}, 19:11--21.
+
+\bibitem[Glover et~al., 1974]{glover}
+Glover, F., Karney, D., Klingman, D., and Napier, A. (1974).
+\newblock A computation study on start procedures, basis change criteria, and
+  solution algorithms for transportation problems.
+\newblock {\em Management Science}, 20:793--813.
+
+\bibitem[J{\'o}zefowska and Zimniak, 2008]{jozefowska2008optimization}
+J{\'o}zefowska, J. and Zimniak, A. (2008).
+\newblock Optimization tool for short-term production planning and scheduling.
+\newblock {\em International Journal of Production Economics}, 112:109--120.
+
+\bibitem[Kang et~al., 1999]{kang1999lotsizing}
+Kang, S., Malik, K., and Thomas, L.~J. (1999).
+\newblock Lotsizing and scheduling on parallel machines with sequence-dependent
+  setup costs.
+\newblock {\em Management Science}, 45:273--289.
+
+\bibitem[Karimi et~al., 2003]{karimi2003capacitated}
+Karimi, B., Ghomi, S. M. T.~F., and Wilson, J.~M. (2003).
+\newblock The capacitated lot sizing problem: A review of models and
+  algorithms.
+\newblock {\em Omega}, 31:365--378.
+
+\bibitem[Lang and Shen, 2011]{lang2011fix}
+Lang, J.~C. and Shen, Z.-J.~M. (2011).
+\newblock Fix-and-optimize heuristics for capacitated lot-sizing with
+  sequence-dependent setups and substitutions.
+\newblock {\em European Journal of Operational Research}, 214:595--605.
+
+\bibitem[Mateus et~al., 2010]{mateus2010capacitated}
+Mateus, G.~R., Ravetti, M.~G., de~Souza, M.~C., and Valeriano, T.~M. (2010).
+\newblock Capacitated lot sizing and sequence dependent setup scheduling: an
+  iterative approach for integration.
+\newblock {\em Journal of Scheduling}, 13:245--259.
+
+\bibitem[Meyr, 2000]{meyr2000simultaneous}
+Meyr, H. (2000).
+\newblock Simultaneous lotsizing and scheduling by combining local search with
+  dual reoptimization.
+\newblock {\em European Journal of Operational Research}, 120:311--326.
+
+\bibitem[Meyr, 2002]{meyr2002simultaneous}
+Meyr, H. (2002).
+\newblock Simultaneous lotsizing and scheduling on parallel machines.
+\newblock {\em European Journal of Operational Research}, 139:277--292.
+
+\bibitem[Meyr and Mann, 2013]{meyr2013decomposition}
+Meyr, H. and Mann, M. (2013).
+\newblock A decomposition approach for the general lotsizing and scheduling
+  problem for parallel production lines.
+\newblock {\em European Journal of Operational Research}, 229:718--731.
+
+\bibitem[Pochet and Wolsey, 2006]{pochetwolsey2006}
+Pochet, Y. and Wolsey, L.~A. (2006).
+\newblock {\em Production Planning by Mixed Integer Programming. Series in
+  Operations Research and Financial}.
+\newblock Springer Verlag, New York, NY.
+
+\bibitem[Quadt and Kuhn, 2008]{quadt2008capacitated}
+Quadt, D. and Kuhn, H. (2008).
+\newblock Capacitated lot-sizing with extensions: A review.
+\newblock {\em 4OR}, 6:61--83.
+
+\bibitem[Reinfeld and Vogel, 1958]{vogel}
+Reinfeld, N.~V. and Vogel, W.~R. (1958).
+\newblock {\em Mathematical Programming}.
+\newblock Prentice-Hall, Englewood Cliffs, N.J.
+
+\bibitem[R\'{\i}os-Sol\'{\i}s et~al., 2020]{yasmin2020}
+R\'{\i}os-Sol\'{\i}s, Y.~{\'A}., Ibarra-Rojas, O.~J., Cabo, M., and Possani, E.
+  (2020).
+\newblock A heuristic based on mathematical programming for a lot-sizing and
+  scheduling problem in mold-injection production.
+\newblock {\em European Journal of Operational Research}, 284:861--873.
+
+\bibitem[Robinson et~al., 2009]{robinson2009coordinated}
+Robinson, P., Narayanan, A., and Sahin, F. (2009).
+\newblock Coordinated deterministic dynamic demand lot-sizing problem: A review
+  of models and algorithms.
+\newblock {\em Omega}, 37:3--15.
+
+\bibitem[Soler et~al., 2019]{soler2020}
+Soler, W.~O., Santos, M.~O., and Akartunalı, K. (2019).
+\newblock {MIP} approaches for a lot sizing and scheduling problem on multiple
+  production lines with scarce resources, temporary workstations, and
+  perishable products.
+\newblock {\em Journal of Operational Research Society}, to appear.
+
+\bibitem[W\"orbelauer et~al., 2019]{worbe2019}
+W\"orbelauer, M., Meyr, H., and Almada-Lobo, B. (2019).
+\newblock Simultaneous lotsizing and scheduling considering secondary
+  resources: a general model, literature review and classification.
+\newblock {\em OR Spectrum}, 41:1--43.
+
+\bibitem[Xiao et~al., 2015]{xiao2015hybrid}
+Xiao, J., Yang, H., Zhang, C., Zheng, L., and Gupta, J. (2015).
+\newblock A hybrid lagrangian-simulated annealing-based heuristic for the
+  parallel-machine capacitated lot-sizing and scheduling problem with
+  sequence-dependent setup times.
+\newblock {\em Computers \& Operations Research}, 63:72--82.
+
+\bibitem[Zhu and Wilhelm, 2006]{zhu2006scheduling}
+Zhu, X. and Wilhelm, W.~E. (2006).
+\newblock Scheduling and lot sizing with sequence-dependent setup: A literature
+  review.
+\newblock {\em IIE Transactions}, 38:987--1007.
+
+\end{thebibliography}
