@@ -1,4 +1,5 @@
-"Lot Sizing Math.exe" A7.txt saida.csv 1 1 3600 2 & "Lot Sizing Math.exe" A7.txt saida.csv 1 10 3600 2
+"Lot Sizing Math.exe" Aalt6.txt saida.csv 1 1 600 2
+"Lot Sizing Math.exe" Aalt6.txt saida.csv 1 10 600 2
 ::"Lot Sizing Math.exe" A2.txt saida.csv 1 2 1 1
 ::"Lot Sizing Math.exe" A3.txt saida.csv 1 2 1 1
 ::"Lot Sizing Math.exe" A4.txt saida.csv 1 2 1 1
