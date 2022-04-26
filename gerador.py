@@ -40,6 +40,9 @@ def gerador(instance, m, n,
         p.append(list(np.random.uniform(p_low,p_high, size =(card_IL[i])).round(4)))
         q.append(np.zeros(card_IL[i]))
     
+    for i in range(m):
+        calI[i].sort()
+
     q = np.asarray(q, dtype = "object")
     for l in range(m):
         for i in range(card_IL[l]):
@@ -101,14 +104,28 @@ def gerador(instance, m, n,
 
 
     cp = []
+    cp_aux = np.zeros((m,n))
     
+    min_colunas = np.ones(n) * 1000
     for l in range(m):
         vec_ax = np.zeros(card_IL[l])
         for i in range(card_IL[l]):
             vec_ax[i] = np.random.uniform(cp_min, cp_max, size = 1) * float(p[l][i])
+            cp_aux[l][calI[l][i] - 1] = vec_ax[i] 
+            if min_colunas[calI[l][i] - 1] > vec_ax[i]:
+                min_colunas[calI[l][i] - 1] = vec_ax[i]
         cp.append(vec_ax)
     cp = np.asarray(cp,dtype="object")
-    
+
+    print(calI)
+    print(cp)
+
+    for l in range(m):
+        for i in range(card_IL[l]):
+            cp[l][i] = cp_aux[l][calI[l][i] - 1] - min_colunas[calI[l][i] - 1]
+
+    print(cp)
+
     media = 0.0
     for l in range(m):
         for i in range(card_IL[l]):
@@ -235,9 +252,21 @@ def gerador(instance, m, n,
             if i != card_IL[l] - 1:
                 f.write("\n")
 
-#Grupo A
+#def gerador(instance, m, n,
+#            e_low, e_high,
+#            Cw_low, Cw_high,
+#            IL_low, IL_high,
+#            q_low, q_high,
+#            p_low, p_high,
+#            Iplus_max, Iminus_max,
+#            d_min, d_max,
+#            h_min, h_max,
+#            g_min, g_max,
+#            cp_min, cp_max,
+#            cs_min, cs_max):
 
-instancias = ['Aalt6.txt', 'Aalt7.txt', 'Aalt8.txt', 'Aalt9.txt', 'Aalt10.txt']
+#Grupo A
+instancias = ['A6.txt', 'A7.txt', 'A8.txt', 'A9.txt', 'A10.txt']
 for inst in instancias:
     gerador(inst,2,8,2,6,
             10000,14000,
@@ -251,77 +280,62 @@ for inst in instancias:
             0.8,1.2,
             80, 100);
 
-
-#instancias = ['A6.txt', 'A7.txt', 'A8.txt', 'A9.txt', 'A10.txt']
-#for inst in instancias:
-#    gerador(inst,2,8,2,6,
-#            10000,14000,
-#            5, 8,
-#            1, 9,
-#            0.012,0.04,
-#            4000, 500,
-#            9000, 13000,
-#            0.27, 0.54,
-#            10, 15,
-#            0.8,1.2,
-#            80, 100);
-#
 ##Grupo B
-#instancias = ['B6.txt', 'B7.txt', 'B8.txt', 'B9.txt', 'B10.txt']
-#for inst in instancias:
-#	gerador(inst,3,12,5,9,
-#	        14000,18000,
-#	        3, 9,
-#	        3, 6,
-#	        0.008,0.05,
-#	        4000, 500,
-#	        16000, 24000,
-#	        0.2, 0.34,
-#	        10, 15,
-#	        0.8,1.2,
-#	        100, 200);
-#
+instancias = ['B6.txt', 'B7.txt', 'B8.txt', 'B9.txt', 'B10.txt']
+for inst in instancias:
+	gerador(inst,3,12,5,9,
+	        14000,18000,
+	        3, 9,
+	        3, 6,
+	        0.008,0.05,
+	        4000, 500,
+	        16000, 24000,
+	        0.2, 0.34,
+	        10, 15,
+	        0.8,1.2,
+	        100, 200);
+
 ##Grupo C
-#instancias = ['C6.txt', 'C7.txt', 'C8.txt', 'C9.txt', 'C10.txt']
-#for inst in instancias:
-#	gerador(inst,4,16,2,6,
-#	        40000,48000,
-#	        4, 10,
-#	        3, 6,
-#	        0.007,0.017,
-#	        20000, 2000,
-#	        19000, 78000,
-#	        0.3, 0.87,
-#	        10, 15,
-#	        0.8,1.2,
-#	        100, 200);
-#
+instancias = ['C6.txt', 'C7.txt', 'C8.txt', 'C9.txt', 'C10.txt']
+for inst in instancias:
+	gerador(inst,4,16,2,6,
+	        40000,48000,
+	        4, 10,
+	        3, 6,
+	        0.007,0.017,
+	        20000, 2000,
+	        19000, 78000,
+	        0.3, 0.87,
+	        10, 15,
+	        0.8,1.2,
+	        100, 200);
+
 ##Grupo D
-#instancias = ['D6.txt', 'D7.txt', 'D8.txt', 'D9.txt', 'D10.txt']
-#for inst in instancias:
-#	gerador(inst,5,20,1,6,
-#	        180000,220000,
-#	        5, 12,
-#	        6, 9,
-#	        0.003,0.01,
-#	        50000, 4000,
-#	        27000, 220000,
-#	        0.07, 0.21,
-#	        10, 15,
-#	        0.8,1.2,
-#	        230, 1200);
+instancias = ['D6.txt', 'D7.txt', 'D8.txt', 'D9.txt', 'D10.txt']
+for inst in instancias:
+	gerador(inst,5,20,1,6,
+	        180000,220000,
+	        5, 12,
+	        6, 9,
+	        0.003,0.01,
+	        50000, 4000,
+	        27000, 220000,
+	        0.07, 0.21,
+	        10, 15,
+	        0.8,1.2,
+	        230, 1200);
 #
 ##Grupo E
-#instancias = ['E6.txt', 'E7.txt', 'E8.txt', 'E9.txt', 'E10.txt']
-#for inst in instancias:
-#	gerador(inst,7,28,2,8,
-#	        120000,150000,
-#	        2, 12,
-#	        3, 6,
-#	        0.005,0.028,
-#	        30000, 4000,
-#	        65000, 100000,
-#	        0.087, 0.433,
-#	        10, 15,
-#	        0.8,1.2,
-#	        150, 620);
+instancias = ['E6.txt', 'E7.txt', 'E8.txt', 'E9.txt', 'E10.txt']
+for inst in instancias:
+	gerador(inst,7,28,2,8,
+	        120000,150000,
+	        2, 12,
+	        3, 6,
+	        0.005,0.028,
+	        30000, 4000,
+	        65000, 100000,
+	        0.087, 0.433,
+	        10, 15,
+	        0.8,1.2,
+	        150, 620);
