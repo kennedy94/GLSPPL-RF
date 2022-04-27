@@ -40,10 +40,6 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 	}
 
 
-
-	
-
-
 	//relaxação linear
 	{
 		IloEnv env;
@@ -292,8 +288,14 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			return;
 		}
 
+		double sum = 0.0;
+		for (int i = 0; i < N; i++) {
+			sum += I0_plus[i];
+		}
+		
+
 		ofstream dados_variaves("dados_var.csv", fstream::app);
-		dados_variaves << instancia << "," << particoes_completas.size() << "," << nvar_reais << "," << nconst << endl;
+		dados_variaves << instancia << "," << particoes_completas.size() << "," << nvar_reais << "," << nconst << "," << sum/CA << endl;
 		dados_variaves.close();
 		//return;
 
@@ -452,7 +454,8 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 		IloEnv env;
 		IloModel modelo;
 		IloCplex cplex;
-		IloExpr OBJETIVO;
+		IloNumVar OBJETIVO;
+		IloExpr c1, c2, c3, c4;
 		try {
 
 			IloArray<IloFloatVarArray> I_plus, I_minus;
@@ -529,19 +532,22 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 
 			modelo = IloModel(env, "modelo_linear");
 			//Função objetivo
-			OBJETIVO = IloExpr(env);	//Criar expressão auxilar para calcular os custos do objetivo separadamente
-
+			OBJETIVO = IloNumVar(env,0.0, IloInfinity);	//Criar expressão auxilar para calcular os custos do objetivo separadamente
+			c1 = IloExpr(env);
+			c2 = IloExpr(env);
+			c3 = IloExpr(env);
+			c4 = IloExpr(env);
 			//calculando custo de estoque
 			for (i = 0; i < N; i++) {
 				for (t = 1; t < T; t++) {	//não inclui período 0
-					OBJETIVO += h[i] * I_plus[i][t];
+					c1 += h[i] * I_plus[i][t];
 				}
 			}
 
 			//calculando custo de backorder
 			for (i = 0; i < N; i++) {
 				for (t = 1; t < T; t++) {	//não inclui período 0
-					OBJETIVO += g[i] * I_minus[i][t];
+					c2 += g[i] * I_minus[i][t];
 				}
 			}
 
@@ -551,7 +557,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 					for (j = 0; j < N; j++) {
 						if (l_produz_i[l][i] && l_produz_i[l][j]) { //somente se l produz i e j, caso contrário vai dar erro pq a variável não existe
 							for (s = 1; s < W; s++) {	//não inclui subperíodo 0
-								OBJETIVO += cs[i][j][l] * y[i][j][l][s];
+								c3 += cs[i][j][l] * y[i][j][l][s];
 							}
 						}
 
@@ -564,14 +570,17 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 				for (l = 0; l < M; l++) {
 					if (l_produz_i[l][i]) {	//somente se l produz i, caso contrário vai dar erro pq a variável não existe
 						for (s = 1; s < W; s++) {	//não inclui subperíodo 0
-							OBJETIVO += cp[i][l] * q[i][l][s];
+							c4 += cp[i][l] * q[i][l][s];
 						}
 					}
 				}
 			}
-
+			modelo.add((c1 + c2 + c3 + c4) == OBJETIVO);
+			
 			//função objetivo propriamente diata, minimizar todos os custos
 			modelo.add(IloMinimize(env, OBJETIVO)).setName("FO");
+			
+
 
 			IloExpr soma(env);
 
@@ -706,6 +715,12 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 				ofstream resultados(saida, fstream::app);
 				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << "," << cplex.getNnodes() << endl;
 				resultados.close();
+
+
+				resultados.open("custos.txt", fstream::app);
+				resultados << instancia << "," << cplex.getValue(c1) << "," << cplex.getValue(c2) << "," << cplex.getValue(c3) << "-" << cplex.getValue(c4) << endl;
+				resultados.close();
+
 				bool viavel = teste_de_viabilidade(cplex, I_plus, I_minus, q, x, y);
 				cout << (viavel ? "viavel" : "inviavel") << endl;
 				break;

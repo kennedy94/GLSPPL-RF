@@ -34,12 +34,26 @@ def gerador(instance, m, n,
     p = []
     q = []
     
-    for i in range(m):
-        calI.append(list(np.random.choice(np.arange(1,n+1),size = (card_IL[i]), replace=False) ))
-        turnos.append(list(np.random.randint(q_low, q_high, size =(card_IL[i]))))
-        p.append(list(np.random.uniform(p_low,p_high, size =(card_IL[i])).round(4)))
-        q.append(np.zeros(card_IL[i]))
+    cont_frequencia = np.zeros(n)
+    while cont_frequencia.count_nonzero() < n:
+        cont_frequencia = np.zeros(n)
+        
+        for i in range(m):
+            calI.append(list(np.random.choice(np.arange(1,n+1),size = (card_IL[i]), replace=False) ))
+            turnos.append(list(np.random.randint(q_low, q_high, size =(card_IL[i]))))
+            p.append(list(np.random.uniform(p_low,p_high, size =(card_IL[i])).round(4)))
+            q.append(np.zeros(card_IL[i]))
     
+        cont_frequencia = np.zeros(n)
+        for i in range(m):
+            for j in calI[i]:
+                cont_frequencia[j - 1] += cont_frequencia[j - 1]
+
+    
+
+
+
+
     for i in range(m):
         calI[i].sort()
 
@@ -64,16 +78,13 @@ def gerador(instance, m, n,
             Iplus[i] = 0
             Iminus[i] = 0
 
-    soma = np.sum(Iplus)
-    #if(soma > Cw)
-    for i in range(n):
-        Iplus[i] = np.round(Iplus[i]/soma * Cw)
-#    
-#    excedente = soma - Cw
-#    if  excedente < 0:
-#        excedente = excedente/np.count_nonzero()
-#        for i in range(n):
-#            Iplus[i] -= excedente
+    soma = np.sum(Iplus) 
+    if soma > Cw:
+        Cw = soma + np.round(0.01*soma)
+
+    #for i in range(n):
+    #    Iplus[i] = np.round(Iplus[i]/soma * Cw)
+    
     
     dd = np.random.randint(d_min, d_max, size = T)
     
