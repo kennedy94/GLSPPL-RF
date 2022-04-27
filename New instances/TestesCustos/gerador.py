@@ -29,14 +29,17 @@ def gerador(instance, m, n,
 
     card_IL = np.random.randint(IL_low, IL_high, size=(m))
     
-    calI = []
-    turnos = []
-    p = []
-    q = []
+    
+    
     
     cont_frequencia = np.zeros(n)
-    while cont_frequencia.count_nonzero() < n:
+    while np.count_nonzero(cont_frequencia) < n:
+        #C:SERSKENNEDYSOURCEREPOSKENNEDY94GLSPPL-RFNEW INSTANCESTESTESCUSTOS(cont_frequencia)
         cont_frequencia = np.zeros(n)
+        calI = []
+        turnos = []
+        p = []
+        q = []
         
         for i in range(m):
             calI.append(list(np.random.choice(np.arange(1,n+1),size = (card_IL[i]), replace=False) ))
@@ -47,7 +50,7 @@ def gerador(instance, m, n,
         cont_frequencia = np.zeros(n)
         for i in range(m):
             for j in calI[i]:
-                cont_frequencia[j - 1] += cont_frequencia[j - 1]
+                cont_frequencia[j - 1] += 1
 
     
 
@@ -128,14 +131,14 @@ def gerador(instance, m, n,
         cp.append(vec_ax)
     cp = np.asarray(cp,dtype="object")
 
-    print(calI)
-    print(cp)
+    #print(calI)
+    #print(cp)
 
     for l in range(m):
         for i in range(card_IL[l]):
             cp[l][i] = cp_aux[l][calI[l][i] - 1] - min_colunas[calI[l][i] - 1]
 
-    print(cp)
+    #print(cp)
 
     media = 0.0
     for l in range(m):
