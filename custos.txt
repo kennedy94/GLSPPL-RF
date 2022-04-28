@@ -5,3 +5,5 @@ New instances\TestesCustos\B6.txt,22740.7,1.5809e+06,6659-586.754
 New instances\TestesCustos\B1.txt,40988.2,42.9091,17963-881.365
 New instances\TestesCustos\B6.txt,30022.1,314590,18443-648.883
 New instances\TestesCustos\B6.txt,64265.7,161788,7497-489.805
+B6.txt,33102.2,427728,3040-47.9534
+New instances\TestesCustos\B6.txt,45116.4,753612,14539-1069.83

@@ -28,10 +28,7 @@ def gerador(instance, m, n,
     
 
     card_IL = np.random.randint(IL_low, IL_high, size=(m))
-    
-    
-    
-    
+
     cont_frequencia = np.zeros(n)
     while np.count_nonzero(cont_frequencia) < n:
         #C:SERSKENNEDYSOURCEREPOSKENNEDY94GLSPPL-RFNEW INSTANCESTESTESCUSTOS(cont_frequencia)
@@ -82,11 +79,9 @@ def gerador(instance, m, n,
             Iminus[i] = 0
 
     soma = np.sum(Iplus) 
-    if soma > Cw:
-        Cw = soma + np.round(0.01*soma)
 
-    #for i in range(n):
-    #    Iplus[i] = np.round(Iplus[i]/soma * Cw)
+    for i in range(n):
+        Iplus[i] = np.round(Iplus[i]/soma * Cw)
     
     
     dd = np.random.randint(d_min, d_max, size = T)
@@ -297,59 +292,59 @@ for inst in instancias:
 ##Grupo B
 instancias = ['B6.txt', 'B7.txt', 'B8.txt', 'B9.txt', 'B10.txt']
 for inst in instancias:
-	gerador(inst,3,12,5,9,
-	        14000,18000,
-	        3, 9,
-	        3, 6,
-	        0.008,0.05,
-	        4000, 500,
-	        16000, 24000,
-	        0.2, 0.34,
-	        10, 15,
-	        0.8,1.2,
-	        100, 200);
+    gerador(inst,3,12,5,9,
+            18000,20000,
+            3, 9,
+            3, 6,
+            0.008,0.05,
+            4000, 500,
+            16000, 24000,
+            0.2, 0.34,
+            10, 15,
+            0.8,1.2,
+            100, 200);
 
 ##Grupo C
 instancias = ['C6.txt', 'C7.txt', 'C8.txt', 'C9.txt', 'C10.txt']
 for inst in instancias:
-	gerador(inst,4,16,2,6,
-	        40000,48000,
-	        4, 10,
-	        3, 6,
-	        0.007,0.017,
-	        20000, 2000,
-	        19000, 78000,
-	        0.3, 0.87,
-	        10, 15,
-	        0.8,1.2,
-	        100, 200);
+    gerador(inst,4,16,2,6,
+            40000,48000,
+            4, 10,
+            3, 6,
+            0.007,0.017,
+            20000, 2000,
+            19000, 78000,
+            0.3, 0.87,
+            10, 15,
+            0.8,1.2,
+            100, 200);
 
 ##Grupo D
 instancias = ['D6.txt', 'D7.txt', 'D8.txt', 'D9.txt', 'D10.txt']
 for inst in instancias:
-	gerador(inst,5,20,1,6,
-	        180000,220000,
-	        5, 12,
-	        6, 9,
-	        0.003,0.01,
-	        50000, 4000,
-	        27000, 220000,
-	        0.07, 0.21,
-	        10, 15,
-	        0.8,1.2,
-	        230, 1200);
+    gerador(inst,5,20,1,6,
+            180000,220000,
+            5, 12,
+            6, 9,
+            0.003,0.01,
+            50000, 4000,
+            27000, 220000,
+            0.07, 0.21,
+            10, 15,
+            0.8,1.2,
+            230, 1200);
 #
-##Grupo E
+#Grupo E
 instancias = ['E6.txt', 'E7.txt', 'E8.txt', 'E9.txt', 'E10.txt']
 for inst in instancias:
-	gerador(inst,7,28,2,8,
-	        120000,150000,
-	        2, 12,
-	        3, 6,
-	        0.005,0.028,
-	        30000, 4000,
-	        65000, 100000,
-	        0.087, 0.433,
-	        10, 15,
-	        0.8,1.2,
-	        150, 620);
+    gerador(inst,7,28,2,8,
+            120000,210000,
+            2, 12,
+            3, 6,
+            0.005,0.028,
+            30000, 4000,
+            65000, 100000,
+            0.087, 0.433,
+            10, 15,
+            0.8,1.2,
+            150, 620);
