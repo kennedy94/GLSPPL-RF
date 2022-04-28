@@ -84,7 +84,7 @@ def gerador(instance, m, n,
         Iplus[i] = np.round(Iplus[i]/soma * Cw)
     
     
-    dd = np.random.randint(d_min, d_max, size = T)
+    dd = np.random.randint(d_min, min(d_max,Cw), size = T)
     
     d = []
     
