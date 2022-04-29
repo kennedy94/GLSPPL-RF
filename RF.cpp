@@ -767,6 +767,46 @@ bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus,
 	IloInt i, j, l, s, t;
 	double soma = 0.0;
 
+	ofstream solucao("solucao.txt");
+
+	for (i = 0; i < N; i++)
+	{
+		for (t = 1; t < T; t++) {
+			solucao << cplex.getValue(I_minus[i][t]) << " ";
+		}
+		solucao << endl;
+	}
+	solucao << endl;
+
+	for (i = 0; i < N; i++)
+	{
+		for (t = 1; t < T; t++) {
+			solucao << cplex.getValue(I_plus[i][t]) << " ";
+		}
+		solucao << endl;
+	}
+
+	solucao << endl;
+	solucao << endl;
+	for (i = 0; i < N; i++)
+	{
+		for (t = 1; t < T; t++) {
+			for (l = 0; l < M; l++) {
+				if (l_produz_i[l][i]) {
+					for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
+						solucao << cplex.getValue(q[i][l][s]) << " ";
+					}
+					solucao << endl;
+				}
+			}
+			solucao << endl;
+		}
+		solucao << endl;
+		solucao << endl;
+	}
+	solucao.close();
+
+
 	//(2)
 	for (i = 0; i < N; i++)
 	{

@@ -7,3 +7,20 @@ New instances\TestesCustos\B6.txt,30022.1,314590,18443-648.883
 New instances\TestesCustos\B6.txt,64265.7,161788,7497-489.805
 B6.txt,33102.2,427728,3040-47.9534
 New instances\TestesCustos\B6.txt,45116.4,753612,14539-1069.83
+New instances\TestesCustos\B9.txt,54604.3,481095,5014-280.624
+New instances\TestesCustos\B9.txt,46833.2,92463.2,19743-166.716
+New instances\TestesCustos\B6.txt,25502.7,433852,19285-849.827
+New instances\TestesCustos\B6.txt,29563.7,344433,5748-52.3272
+New instances\TestesCustos\B6.txt,45092.3,228632,13892-27.3427
+New instances\TestesCustos\B6.txt,38513.2,111249,7144-678.413
+New instances\TestesCustos\B6.txt,41443.4,108951,6710-688.323
+New instances\TestesCustos\B1.txt,40988.2,42.9091,17963-881.365
+New instances\TestesCustos\B6.txt,44207.8,60071.5,9288-957.56
+New instances\TestesCustos\B6.txt,35794.8,328701,13379-168.567
+New instances\TestesCustos\B6.txt,51029.2,162214,9400-459.576
+New instances\TestesCustos\B6.txt,41600.5,59934.6,6013-701.787
+New instances\TestesCustos\B6.txt,32902.8,11750.7,9850-0
+New instances\TestesCustos\B6.txt,34456.6,14576.3,11582-0
+New instances\TestesCustos\B6.txt,31657.9,6564.15,18959-822.309
+New instances\TestesCustos\B6.txt,56127.1,139434,20491-568.94
+New instances\TestesCustos\B6.txt,40241.1,9073.06,25315-634.787

@@ -31,7 +31,6 @@ def gerador(instance, m, n,
 
     cont_frequencia = np.zeros(n)
     while np.count_nonzero(cont_frequencia) < n:
-        #C:SERSKENNEDYSOURCEREPOSKENNEDY94GLSPPL-RFNEW INSTANCESTESTESCUSTOS(cont_frequencia)
         cont_frequencia = np.zeros(n)
         calI = []
         turnos = []
@@ -84,12 +83,16 @@ def gerador(instance, m, n,
         Iplus[i] = np.round(Iplus[i]/soma * Cw)
     
     
-    dd = np.random.randint(d_min, min(d_max,Cw), size = T)
-    
+    dd = np.random.randint(d_min, d_max, size = T)
+    #Cw = np.max(dd)
+
     d = []
     
-    proportion = np.random.uniform(0.05,0.9,size = n)
-    
+    proportion = np.random.uniform(0.5,0.9,size = n)
+    for i in range(n):
+        proportion[i] *= 2**cont_frequencia[i]
+    print(proportion)
+
     for t in range(T):
         d.append(gerar_n_com_soma_v(proportion, n, dd[t]))
     
