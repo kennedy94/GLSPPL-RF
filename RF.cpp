@@ -713,7 +713,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 
 			if (k == K - 1) {
 				ofstream resultados(saida, fstream::app);
-				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << "," << cplex.getNnodes() << endl;
+				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << "," << cplex.getObjective() << endl;
 				resultados.close();
 
 

@@ -41,3 +41,8 @@ New instances\TestesCustos\B6.txt,60615,100.027,1-2,1,9182
 New instances\TestesCustos\B6.txt,58003.4,100.114,1-2,10,1919
 New instances\TestesCustos\B6.txt,216621,100.019,1-2,1,1027
 New instances\TestesCustos\B6.txt,75264,94.1927,1-2,10,1143
+B6.txt,463067,100.023,1-2,1,7335
+B1.txt,58541.9,100.048,1-2,1,2596
+B_teste.txt,323286,100.03,1-2,1,3061
+B_teste_2.txt,371189,100.024,1-2,1,FO = (IloNumVar(8771)[0 .. inf] , IloObjective, Minimize);
+
