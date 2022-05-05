@@ -144,7 +144,7 @@ def gerador(instance, m, n,
             for j in range(card_IL[l]):
                 media += e[l][i][j]
     
-    media /= (m* card_IL[l] * card_IL[l] )
+    media /= (m* card_IL[l] * card_IL[l] - m*card_IL[l])
     
     cs = []
     for l in range(m):

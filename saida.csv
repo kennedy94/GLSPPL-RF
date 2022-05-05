@@ -46,3 +46,19 @@ B1.txt,58541.9,100.048,1-2,1,2596
 B_teste.txt,323286,100.03,1-2,1,3061
 B_teste_2.txt,371189,100.024,1-2,1,FO = (IloNumVar(8771)[0 .. inf] , IloObjective, Minimize);
 
+B_teste.txt,318287,100.033,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B_teste.txt,318287,100.032,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B_teste.txt,318287,100.039,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B_teste.txt,318287,100.037,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B_teste.txt,318287,100.03,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B_teste.txt,318287,100.033,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B1.txt,60454.5,100.033,1-2,1,FO = (IloNumVar(16681)[0 .. inf] , IloObjective, Minimize);
+
+B_teste.txt,37743.9,100.021,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+

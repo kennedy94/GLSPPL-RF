@@ -718,7 +718,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 
 
 				resultados.open("custos.txt", fstream::app);
-				resultados << instancia << "," << cplex.getValue(c1) << "," << cplex.getValue(c2) << "," << cplex.getValue(c3) << "-" << cplex.getValue(c4) << endl;
+				resultados << instancia << "," << cplex.getValue(c1) << "," << cplex.getValue(c2) << "," << cplex.getValue(c3) << "," << cplex.getValue(c4) << endl;
 				resultados.close();
 
 				bool viavel = teste_de_viabilidade(cplex, I_plus, I_minus, q, x, y);
@@ -788,15 +788,14 @@ bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus,
 
 	solucao << endl;
 	solucao << endl;
-	for (i = 0; i < N; i++)
-	{
-		for (t = 1; t < T; t++) {
-			for (l = 0; l < M; l++) {
-				if (l_produz_i[l][i]) {
+	for (l = 0; l < M; l++) {
+		for (i = 0; i < N; i++)
+		{
+			if (l_produz_i[l][i]) {
+				for (t = 1; t < T; t++) {
 					for (s = (t - 1) * W_p + 1; s <= t * W_p; s++) {
 						solucao << cplex.getValue(q[i][l][s]) << " ";
 					}
-					solucao << endl;
 				}
 			}
 			solucao << endl;
@@ -804,6 +803,7 @@ bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus,
 		solucao << endl;
 		solucao << endl;
 	}
+
 	solucao.close();
 
 
