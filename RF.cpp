@@ -258,6 +258,12 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			cplex.setParam(IloCplex::Param::MIP::Display, 0);
 			cplex.solve();
 
+
+
+			ofstream resultados("relax_linear.csv", fstream::app);
+			resultados << instancia << "," << cplex.getObjValue() << "," << estrategia << "-" << modo_divisao << "," << K << endl;
+			resultados.close();
+			exit(-1);
 			
 			//calcular valores para S9
 			for (auto& var : particoes_completas) {
