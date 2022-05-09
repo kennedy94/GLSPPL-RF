@@ -1,0 +1,30 @@
+set terminal epslatex size 6cm,6cm 
+set output "abkm2020fig7a.tex"
+
+set tmargin 0
+set bmargin 1
+set lmargin 0
+set rmargin 0
+
+set datafile separator comma
+unset title
+set xzeroaxis dashtype "-" linewidth 6
+set key autotitle columnheader
+set yrange [-50:10]
+#unset ytics
+#unset label
+#unset grid
+#unset key
+set key at 8,-2.5;
+
+set ylabel "Average gap to company's solution"
+set xlabel "$K$"
+#set label 1 'Gap to CPLEX solution (i.e., to K=1)' at -0.25,1 rotate by 90
+#set xtics ("1" 1, "2" 2, "3" 3, "4" 4, "5" 5, "6" 6, "7" 7, "8" 8, "9" 9, "10" 10)
+set ytics ('$100\%%$' 100, '$10\%%$' 10, '$80\%%$' 80, '$0\%%$' 0, '$20\%%$' 20, '$40\%%$' 40, '$60\%%$' 60, '$-100\%%$' -100, '$-80\%%$' -80, '$-10\%%$' -10, '$-20\%%$' -20, '$-30\%%$' -30, '$-40\%%$' -40, '$-50\%%$' -50, '$-60\%%$' -60);
+set yrange [-50:10]
+#set y2label 'Gap'
+plot for [col=2:7] 'abkm2020fig7a.csv' using 0:col:xtic(1) with linespoints, \
+	for [col=-50:5:10] col dt 2 lc "#A9A9A9" notitle
+
+exit

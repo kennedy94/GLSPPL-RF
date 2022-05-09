@@ -1,0 +1,58 @@
+set terminal epslatex size 5,5
+set output "abkm2020fig8.tex"
+
+set tmargin 0
+set bmargin 1
+set lmargin 0
+set rmargin 0
+set style fill solid
+set boxwidth 0.5
+set style data histogram
+set datafile separator comma
+#set key autotitle columnhead
+#unset title
+#unset ytics
+#unset label
+unset grid
+#unset key
+
+set key at 1.8,95;
+set style line 3 linecolor 'gray' linetype 1 dt 2 linewidth 3;
+
+unset colorbox
+
+set palette defined (0 '#3CB371', 1 '#000000', 2 '#8B008B', 3 '#6495ED')
+
+set yrange [0:110]
+set ytics ('$100\%%$' 100, '$110\%%$' 110, '$50\%%$' 50, '$0\%%$' 0, '$10\%%$' 10, '$20\%%$' 20, '$30\%%$' 30, '$40\%%$' 40, '$60\%%$' 60, '$70\%%$' 70, '$80\%%$' 80, '$90\%%$' 90);
+set xrange [-0.5:7.5]
+set xtics ("P1" 0, "P2" 1, "P3" 2, "P4" 3, "P5" 4, "P6" 5, "P7" 6, "P8" 7)
+set label font ",2" '$\scriptstyle  271.62\%$' at 3.8,98;
+set label font ",2" '$\scriptstyle  118.81\%$' at 4.65,98;
+set label font ",2" '$\scriptstyle  646.76\%$' at 5.8,98;
+set label font ",2" '$\scriptstyle  646.76\%$' at 6.4,102;
+set label font ",2" '$\scriptstyle  171.02\%$' at 6.7,98;
+
+LABEL="Company's solution"
+set obj 10 rect at 2,100 size char strlen(LABEL), char 1 fc rgb "white" front
+set label LABEL at 2,100 front center
+
+set arrow from 0.7,100 to 0.4,100 lw 6 filled front;
+set arrow from 3.3,100 to 3.6,100 lw 6 filled front;
+
+plot 'abkm2020fig8.csv' using 16 lc 3 title "CPLEX", \
+	for [col=17:21] 'abkm2020fig8.csv' using col lc 3 notitle,\
+	'abkm2020fig8.csv' using 15 lc 0 notitle, \
+	'abkm2020fig8.csv' using 2 lc 1 title "S1 (K = 8)", \
+	for [col=3:7] 'abkm2020fig8.csv' using col lc 1 notitle, \
+	'abkm2020fig8.csv' using 15 lc 0 notitle, \
+	'abkm2020fig8.csv' using 9 lc 2 title "S9 (K = 8)", \
+	for [col=10:14] 'abkm2020fig8.csv' using col lc 2 notitle , \
+	for [col=0:95:5] col dt 2 lc "#A9A9A9" notitle, \
+	for [col=105:110:5] col dt 2 lc "#A9A9A9" notitle, \
+	100 dt 2 lc "#A9A9A9" lw 4 notitle
+
+exit
+
+#palette frac (14-9)/15.0
+

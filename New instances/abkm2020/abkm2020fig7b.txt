@@ -1,0 +1,28 @@
+set terminal epslatex size 6cm,6cm 
+set output "abkm2020fig7b.tex"
+
+set tmargin 0
+set bmargin 1
+set lmargin 0
+set rmargin 0
+
+set datafile separator comma
+unset title
+set xzeroaxis dashtype "-" linewidth 6
+set key autotitle columnheader
+unset ytics
+#unset label
+#unset grid
+#unset key
+
+set key at 8,-2.5;
+set xlabel "$K$"
+#set label 1 'Gap to CPLEX solution (i.e., to K=1)' at -0.25,1 rotate by 90
+set ytics (" " 1,)
+set yrange [-50:10]
+set ylabel " "
+
+plot for [col=2:7] 'abkm2020fig7b.csv' using 0:col:xtic(1) with linespoints, \
+	for [col=-50:5:10] col dt 2 lc "#A9A9A9" notitle
+
+exit
