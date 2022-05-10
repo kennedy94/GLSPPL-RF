@@ -21,28 +21,28 @@ set ytics ('$0\%%$' 0);
 unset xtics
 set yrange [-.6:0.7]
 set y2label 'Group A'
-plot for [col=7:11] 'S13600A.csv' using 0:col with linespoints
+plot for [col=2:11] 'S13600A.csv' using 0:col with linespoints
 
 unset xtics
 set yrange [-.5:1]
 set y2label 'Group B'
-plot for [col=7:11] 'S13600B.csv' using 0:col with linespoints
+plot for [col=2:11] 'S13600B.csv' using 0:col with linespoints
 
 unset xtics
 set yrange [-1:0.1]
 set y2label 'Group C'
-plot for [col=7:11] 'S13600C.csv' using 0:col with linespoints
+plot for [col=2:11] 'S13600C.csv' using 0:col with linespoints
 
 unset xtics
 set yrange [-1.1:0.1]
 set y2label 'Group D'
-plot for [col=7:11] 'S13600D.csv' using 0:col with linespoints
+plot for [col=2:11] 'S13600D.csv' using 0:col with linespoints
 
 set label 1 'Gap to CPLEX solution (i.e., to $K=1$)' at -0.25,1 rotate by 90
 set xtics ("1" 1, "2" 2, "3" 3, "4" 4, "5" 5, "6" 6, "7" 7, "8" 8, "9" 9, "10" 10)
 set yrange [-1:0.6]
 set y2label 'Group E'
-plot for [col=7:11] 'S13600E.csv' using 0:col with linespoints
+plot for [col=2:11] 'S13600E.csv' using 0:col with linespoints
 
 unset multiplot
 exit
