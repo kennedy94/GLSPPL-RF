@@ -1,8 +1,9 @@
+cd 'C:\Users\kenne\source\repos\kennedy94\GLSPPL-RF\New instances\abkm2020'
 set terminal epslatex size 12cm,6cm 
 set style fill solid 0.5 border -1
 set style boxplot nooutliers
 set style data boxplot 
-set xzeroaxis dashtype "-" linewidth 6
+set xzeroaxis dashtype "-" #linewidth 4
 set boxwidth  0.5
 set pointsize 1
 set yrange [-1:0.4]

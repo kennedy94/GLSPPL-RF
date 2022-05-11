@@ -1,3 +1,4 @@
+cd 'C:\Users\kenne\source\repos\kennedy94\GLSPPL-RF\New instances\abkm2020'
 set terminal epslatex size 5,5
 set output "abkm2020fig8.tex"
 
@@ -46,13 +47,22 @@ plot 'abkm2020fig8.csv' using 16 lc 3 title "CPLEX", \
 	'abkm2020fig8.csv' using 2 lc 1 title "S1 (K = 8)", \
 	for [col=3:7] 'abkm2020fig8.csv' using col lc 1 notitle, \
 	'abkm2020fig8.csv' using 15 lc 0 notitle, \
-	'abkm2020fig8.csv' using 9 lc 2 title "S9 (K = 8)", \
-	for [col=10:14] 'abkm2020fig8.csv' using col lc 2 notitle , \
 	for [col=0:95:5] col dt 2 lc "#A9A9A9" notitle, \
 	for [col=105:110:5] col dt 2 lc "#A9A9A9" notitle, \
 	100 dt 2 lc "#A9A9A9" lw 4 notitle
 
 exit
 
-#palette frac (14-9)/15.0
 
+
+plot 'abkm2020fig8.csv' using 16 lc 3 title "CPLEX", \
+	for [col=17:21] 'abkm2020fig8.csv' using col lc 3 notitle,\
+	'abkm2020fig8.csv' using 15 lc 0 notitle, \
+	'abkm2020fig8.csv' using 2 lc 1 title "S1 (K = 8)", \
+	for [col=3:7] 'abkm2020fig8.csv' using col lc 1 notitle, \
+	'abkm2020fig8.csv' using 15 lc 0 notitle, \
+	'abkm2020fig8.csv' using 9 lc 2 title "S9 (K = 8)", \
+	for [col=10:14] 'abkm2020fig8.csv' using col lc 2 notitle , \
+	for [col=0:95:5] col dt 2 lc "#A9A9A9" notitle, \
+	for [col=105:110:5] col dt 2 lc "#A9A9A9" notitle, \
+	100 dt 2 lc "#A9A9A9" lw 4 notitle

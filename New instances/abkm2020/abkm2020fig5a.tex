@@ -1,5 +1,9 @@
 % GNUPLOT: LaTeX picture with Postscript
 \begingroup
+  % Encoding inside the plot.  In the header of your document, this encoding
+  % should to defined, e.g., by using
+  % \usepackage[cp1252,<other encodings>]{inputenc}
+  \inputencoding{cp1252}%
   \makeatletter
   \providecommand\color[2][]{%
     \GenericError{(gnuplot) \space\space\space\@spaces}{%
@@ -79,6 +83,7 @@
     \fi%
     \setlength{\fboxrule}{0.5pt}%
     \setlength{\fboxsep}{1pt}%
+    \definecolor{tbcol}{rgb}{1,1,1}%
 \begin{picture}(6802.00,3400.00)%
     \gplgaddtomacro\gplbacktext{%
       \csname LTb\endcsname%%
@@ -100,7 +105,7 @@
     \gplgaddtomacro\gplfronttext{%
     }%
     \gplbacktext
-    \put(0,0){\includegraphics{abkm2020fig5a}}%
+    \put(0,0){\includegraphics[width={340.10bp},height={170.00bp}]{abkm2020fig5a}}%
     \gplfronttext
   \end{picture}%
 \endgroup
