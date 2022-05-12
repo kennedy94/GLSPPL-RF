@@ -1,0 +1,20 @@
+A10.txt,35439.6,60.0608,1-2,6,FO = (IloNumVar(11347)[0 .. inf] , IloObjective, Minimize);
+
+A6.txt,48960.6,60.0733,1-2,6,FO = (IloNumVar(12816)[0 .. inf] , IloObjective, Minimize);
+
+A10.txt,36273.2,60.0544,1-2,6,FO = (IloNumVar(11347)[0 .. inf] , IloObjective, Minimize);
+
+A6.txt,48960.6,60.0726,1-2,6,FO = (IloNumVar(12816)[0 .. inf] , IloObjective, Minimize);
+
+A7.txt,32598.7,60.0817,1-2,6,FO = (IloNumVar(9652)[0 .. inf] , IloObjective, Minimize);
+
+A8.txt,33205.8,60.0548,1-2,6,FO = (IloNumVar(8183)[0 .. inf] , IloObjective, Minimize);
+
+A9.txt,16885,60.0591,1-2,6,FO = (IloNumVar(11121)[0 .. inf] , IloObjective, Minimize);
+
+B10.txt,48661.9,60.0806,1-2,6,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
+
+B6.txt,54658.8,60.1041,1-2,6,FO = (IloNumVar(23913)[0 .. inf] , IloObjective, Minimize);
+
+B7.txt,62339.8,60.0754,1-2,6,FO = (IloNumVar(8771)[0 .. inf] , IloObjective, Minimize);
+

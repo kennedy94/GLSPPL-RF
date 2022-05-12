@@ -263,7 +263,6 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			ofstream resultados("relax_linear.csv", fstream::app);
 			resultados << instancia << "," << cplex.getObjValue() << "," << estrategia << "-" << modo_divisao << "," << K << endl;
 			resultados.close();
-			exit(-1);
 			
 			//calcular valores para S9
 			for (auto& var : particoes_completas) {
@@ -772,9 +771,14 @@ bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus,
 {
 	IloInt i, j, l, s, t;
 	double soma = 0.0;
+	string saida_solu = instancia;
+	saida_solu += ".solu";
+	ofstream solucao(saida_solu);
 
-	ofstream solucao("solucao.txt");
 
+	
+
+	solucao << "Iminus" << endl;
 	for (i = 0; i < N; i++)
 	{
 		for (t = 1; t < T; t++) {
@@ -784,16 +788,25 @@ bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus,
 	}
 	solucao << endl;
 
+	vector<int> estoque_usado(T, 0);
+	solucao << "I_plus" << endl;
 	for (i = 0; i < N; i++)
 	{
 		for (t = 1; t < T; t++) {
 			solucao << cplex.getValue(I_plus[i][t]) << " ";
+			estoque_usado[t] += cplex.getValue(I_plus[i][t]);
 		}
 		solucao << endl;
 	}
+	solucao << "Estoque usado" << endl;
+	for (t = 1; t < T; t++) {
+		solucao << estoque_usado[t] << " ";
+	}
+
 
 	solucao << endl;
 	solucao << endl;
+	solucao << "q" << endl;
 	for (l = 0; l < M; l++) {
 		for (i = 0; i < N; i++)
 		{
