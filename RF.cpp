@@ -874,8 +874,9 @@ bool RF::teste_de_viabilidade(IloCplex cplex, IloArray<IloFloatVarArray> I_plus,
 					}
 				}
 			}
-
-
+			ofstream solucao(saida_solu);
+			solucao << soma << " == " << CP[l][t] << endl;
+			solucao.close();
 			if (soma > CP[l][t] + episilon)
 				return false;
 			soma = 0.0;
