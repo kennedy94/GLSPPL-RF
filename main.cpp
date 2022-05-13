@@ -26,12 +26,16 @@ int main(int argc, char* argv[]) {
 	if (argc > 6) {
 		divisao_tempo = atoi(argv[6]);
 	}
+	double capacidade = 1;
+	if (argc > 7) {
+		capacidade = atoi(argv[7]);
+	}
 
 	RF Teste(instancia);
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
 	//cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;
-	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo);
+	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo, capacidade);
 	//Teste.imprimirdadosgerais();
 	return 0;
 }

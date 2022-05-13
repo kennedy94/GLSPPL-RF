@@ -5,8 +5,9 @@
 
 
 
-void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, int modo_divisao)
+void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, int modo_divisao, double capacidade)
 {
+	CA = ceil((double)CA * capacidade);
 
 	IloInt i, j, l, t, s;
 	vector<variavel> particoes_completas;
@@ -718,7 +719,8 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 
 			if (k == K - 1) {
 				ofstream resultados(saida, fstream::app);
-				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << "," << cplex.getObjective() << endl;
+				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << "," << cplex.getObjective() << ","
+					<< capacidade << endl;
 				resultados.close();
 
 
