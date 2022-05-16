@@ -21,21 +21,30 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (argc > 5) {
-		BUDGET = atoi(argv[5]);
+		BUDGET = stod(argv[5]);
 	}
 	if (argc > 6) {
 		divisao_tempo = atoi(argv[6]);
 	}
 	double capacidade = 1;
 	if (argc > 7) {
-		capacidade = atoi(argv[7]);
+		capacidade = stod(argv[7]);
 	}
+
+	double capacidade_total = 0;
+	if (argc > 8) {
+		capacidade_total = stod(argv[8]);
+	}
+
+
+
+	capacidade /= 100;
 
 	RF Teste(instancia);
 
 	//Teste.FIX_AND_OPTIMIZE(Teste.RELAX_AND_FIX(estrategia, k, true));
 	//cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;
-	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo, capacidade);
+	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo, capacidade, capacidade_total);
 	//Teste.imprimirdadosgerais();
 	return 0;
 }

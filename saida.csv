@@ -62,3 +62,4 @@ B1.txt,60454.5,100.033,1-2,1,FO = (IloNumVar(16681)[0 .. inf] , IloObjective, Mi
 
 B_teste.txt,37743.9,100.021,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
 
+Erro na linear

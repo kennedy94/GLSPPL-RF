@@ -5,9 +5,15 @@
 
 
 
-void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, int modo_divisao, double capacidade)
+void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, int modo_divisao, double capacidade, double capacidade_total)
 {
-	CA = ceil((double)CA * capacidade);
+
+	if (capacidade_total != 0)
+		CA = capacidade_total;
+	else
+		CA = ceil((double)CA * capacidade);
+
+	
 
 	IloInt i, j, l, t, s;
 	vector<variavel> particoes_completas;
@@ -719,8 +725,8 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 
 			if (k == K - 1) {
 				ofstream resultados(saida, fstream::app);
-				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << "," << cplex.getObjective() << ","
-					<< capacidade << endl;
+				resultados << instancia << "," << cplex.getObjValue() << "," << elapsed_seconds.count() << "," << estrategia <<"-"<< modo_divisao << "," << K << ","
+					<< capacidade << "," << CA << endl;
 				resultados.close();
 
 
@@ -741,7 +747,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			cout << "\nErro na inteira" << endl;
 
 			ofstream resultados(saida, fstream::app);
-			resultados << instancia << "," << cplex.getStatus() << "," << cplex.getCplexTime() - elapsed_seconds.count() << "," << estrategia << "-" << modo_divisao << "," << K << ",it" << k + 1 << endl;
+			resultados << instancia << "," << cplex.getStatus() << "," << cplex.getCplexTime() - elapsed_seconds.count() << "," << estrategia << "-" << modo_divisao << "," << K << ",it" << k + 1 << "," << capacidade  << "," << CA << endl;
 			resultados.close();
 			return;
 		}
