@@ -730,8 +730,21 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 				resultados.close();
 
 
+				vector<int> estoque_usado(T, 0);
+				for (i = 0; i < N; i++){
+					for (t = 1; t < T; t++) {
+						estoque_usado[t] += cplex.getValue(I_plus[i][t]);
+					}
+				}
+
+				double maximo = 0.0;
+				for (t = 1; t < T; t++) {
+					if (maximo < estoque_usado[t])
+						maximo = estoque_usado[t];
+				}
+
 				resultados.open("custos.txt", fstream::app);
-				resultados << instancia << "," << cplex.getValue(c1) << "," << cplex.getValue(c2) << "," << cplex.getValue(c3) << "," << cplex.getValue(c4) << endl;
+				resultados << instancia << "," << cplex.getValue(c1) << "," << cplex.getValue(c2) << "," << cplex.getValue(c3) << "," << cplex.getValue(c4) << "," << maximo << "," << CA << endl;
 				resultados.close();
 
 				bool viavel = teste_de_viabilidade(cplex, I_plus, I_minus, q, x, y);
@@ -1446,7 +1459,6 @@ vector<vector<variavel>> RF::RF_S9(vector<variavel> particoes_completas, int K) 
 	return particoes;
 }
 
-
 vector<vector<variavel>> RF::RF_S10(vector<variavel> particoes_completas, int K) {
 	vector<vector<variavel>> particoes;
 	int n_var_part = ceil((double)particoes_completas.size() / K);
@@ -1474,7 +1486,6 @@ vector<vector<variavel>> RF::RF_S10(vector<variavel> particoes_completas, int K)
 
 	return particoes;
 }
-
 
 //recebe um vector de variáveis e o número de partições K
 //S11 com S10
