@@ -63,3 +63,10 @@ B1.txt,60454.5,100.033,1-2,1,FO = (IloNumVar(16681)[0 .. inf] , IloObjective, Mi
 B_teste.txt,37743.9,100.021,1-2,1,FO = (IloNumVar(18828)[0 .. inf] , IloObjective, Minimize);
 
 Erro na linear
+Erro na linear
+Erro na linear
+Real-world Instances//P1.txt,647813,50.3169,1-2,8,1,195000
+Real-world Instances//P1.txt,651221,50.5085,1-2,8,1,126307
+Real-world Instances//P1.txt,647051,50.7482,1-2,8,1,126113
+Real-world Instances//P1.txt,651513,51.2434,1-2,8,1,125729
+Real-world Instances//P1.txt,Infeasible,668456,1-2,8,it1,1,125645

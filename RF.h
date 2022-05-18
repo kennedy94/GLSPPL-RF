@@ -15,6 +15,7 @@ class RF :
 public:
 	RF(const char* filename) : Problem(filename) {	};
 
+	double capa_max;
 
 	vector<vector<variavel>> RF_S1(vector<variavel>  particoes_completas, int K);
 

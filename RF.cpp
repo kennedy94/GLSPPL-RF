@@ -742,7 +742,7 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 					if (maximo < estoque_usado[t])
 						maximo = estoque_usado[t];
 				}
-
+				capa_max = maximo;
 				resultados.open("custos.txt", fstream::app);
 				resultados << instancia << "," << cplex.getValue(c1) << "," << cplex.getValue(c2) << "," << cplex.getValue(c3) << "," << cplex.getValue(c4) << "," << maximo << "," << CA << endl;
 				resultados.close();
@@ -759,17 +759,22 @@ void RF::RELAX_AND_FIX(int estrategia, const char* saida, int K, double BUDGET, 
 			cplex.error() << "Erro: " << e.getMessage() << endl;
 			cout << "\nErro na inteira" << endl;
 
+			capa_max = -1;
 			ofstream resultados(saida, fstream::app);
 			resultados << instancia << "," << cplex.getStatus() << "," << cplex.getCplexTime() - elapsed_seconds.count() << "," << estrategia << "-" << modo_divisao << "," << K << ",it" << k + 1 << "," << capacidade  << "," << CA << endl;
 			resultados.close();
 			return;
 		}
 		catch (const exception& e) {
+			capa_max = -1;
 			ofstream resultados(saida, fstream::app);
 			resultados << e.what() << endl;
 			resultados.close();
 		}
 		catch (...) {
+
+			capa_max = -1;
+
 			ofstream resultados(saida, fstream::app);
 			resultados << "Outra excecao" << endl;
 			resultados.close();
