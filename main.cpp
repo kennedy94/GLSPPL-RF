@@ -52,6 +52,7 @@ int main(int argc, char* argv[]) {
 
 		capacidade_total = Teste.capa_max;
 		capacidade_total--;
+		~Teste();
 	}
 
 	
