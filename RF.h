@@ -80,5 +80,58 @@ public:
 	void imprimirdadosgerais();
 
 
+	~RF() {
+		I0_minus.end();
+		I0_minus.end();
+		g.end();
+		h.end();
+		for (auto& i : st)
+		{
+			i.end();
+		}
+		st.end();
+
+		for (auto& i : cs)
+		{
+			i.end();
+		}
+		cs.end();
+		for (auto& i : l_produz_i)
+		{
+			i.end();
+		}
+		l_produz_i.end();
+
+
+		for (auto& i : AUX)
+			i.end();
+		AUX.end();
+
+		for (auto& i : cp)
+			i.end();
+		cp.end();
+
+		for (auto& i : p)
+			i.end();
+		p.end();
+
+		for (auto& i : SP)
+			i.end();
+		SP.end();
+
+
+		for (auto& i : d)
+			i.end();
+		d.end();
+
+		for (auto& i : CP)
+			i.end();
+		CP.end();
+
+
+		for (auto& i : lm)
+			i.end();
+		lm.end();
+	}
 };
 

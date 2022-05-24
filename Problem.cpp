@@ -247,6 +247,3 @@ Problem::Problem(const char* nome){
 }
 
 
-Problem::~Problem()
-{
-}
