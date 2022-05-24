@@ -46,16 +46,15 @@ int main(int argc, char* argv[]) {
 	//cout << "Executando :" << estrategia << "," << saida << "," << k << "," << BUDGET << endl;
 
 
-	while (capacidade_total >= 0)
-	{
-		Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo, capacidade, capacidade_total);
 
-		capacidade_total = Teste.capa_max;
-		capacidade_total--;
-		Teste.~RF();
-	}
+	Teste.RELAX_AND_FIX(estrategia, saida, k, BUDGET, divisao_tempo, capacidade, capacidade_total);
 
-	
+	capacidade_total = Teste.capa_max;
+	capacidade_total--;
+	Teste.~RF();
+
+
+
 	//Teste.imprimirdadosgerais();
 	return 0;
 }
