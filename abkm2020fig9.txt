@@ -1,0 +1,30 @@
+cd 'C:\Users\Kennedy\Source\Repos\kennedy94\GLSPPL-RF'
+set terminal epslatex size 12cm,6cm
+set output "abkm2020fig9.tex"
+
+set tmargin 0
+set bmargin 1
+set lmargin 0
+set rmargin 0
+set datafile sep ','
+set style line 1 \
+    linecolor rgb '#0060ad' \
+    linetype 1 linewidth 2 \
+    pointtype 7 pointsize 1.5
+
+unset grid
+#set style line 100 lt 1 lc rgb "red" lw 2
+#set arrow 100 from 0,-1 to 0,1 nohead ls 100 front
+
+set key spacing 1.2
+
+set xrange [452000.00:460000.00]
+set yrange [440000.00:500000.00]
+set xlabel "Capacity of warehousing"
+set ylabel "Optimal cost"
+
+plot 'figuraP6.csv' using 1:2 with fsteps linestyle 1 notitle, 'figuraP6.csv' using 1:2 with p linestyle 1 notitle, \
+	for [col=440000:500000:10000] col dt "." lc "#A9A9A9" notitle
+
+
+exit
